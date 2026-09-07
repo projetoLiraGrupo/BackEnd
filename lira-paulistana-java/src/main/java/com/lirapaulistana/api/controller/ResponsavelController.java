@@ -4,10 +4,15 @@ import com.lirapaulistana.api.model.Responsavel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.DataClassRowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/responsaveis")
 public class ResponsavelController {
@@ -40,21 +45,23 @@ public class ResponsavelController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> cadastrar(@RequestBody Responsavel body) {
+    public ResponseEntity<Responsavel> cadastrar(@RequestBody Responsavel body) {
         String sql = """
                 INSERT INTO Responsavel
                     (nome, telefone, Endereco_idEndereco)
                 VALUES (?, ?, ?)
                 """;
-
-        jdbcTemplate.update(
-                sql,
-                body.getNome(),
-                body.getTelefone(),
-                body.getEnderecoIdEndereco()
-        );
-
-        return ResponseEntity.status(201).build();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update( con -> {
+                    PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, body.getNome());
+                    ps.setString(2, body.getTelefone());
+                    ps.setInt(3, body.getEnderecoIdEndereco());
+                    return ps;
+                }, keyHolder);
+        Number key = keyHolder.getKey();
+        body.setIdResponsavel(key.intValue());
+        return ResponseEntity.status(201).body(body);
     }
 
     @PutMapping("/{id}")

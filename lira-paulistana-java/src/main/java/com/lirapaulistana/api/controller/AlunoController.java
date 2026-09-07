@@ -2,12 +2,18 @@ package com.lirapaulistana.api.controller;
 
 import com.lirapaulistana.api.model.Aluno;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.DataClassRowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
@@ -21,7 +27,6 @@ public class AlunoController {
     @GetMapping
     public List<Aluno> listar() {
         String sql = "SELECT idAluno, nome, dataNascimento, email, senha, Endereco_idEndereco AS enderecoIdEndereco FROM Aluno ORDER BY idAluno";
-
         return jdbcTemplate.query(sql, new DataClassRowMapper<>(Aluno.class));
     }
 
@@ -40,23 +45,35 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> cadastrar(@RequestBody Aluno body) {
+    public ResponseEntity<Aluno> cadastrar(@RequestBody Aluno body) {
+        String sqlValidacao = """
+                SELECT * FROM aluno WHERE email = ?
+                """;
+        List<Aluno> alunoVerificacao = jdbcTemplate.query(sqlValidacao, new BeanPropertyRowMapper<>(Aluno.class),
+                body.getEmail());
+        if(!alunoVerificacao.isEmpty()){
+            return ResponseEntity.status(409).build();
+        }
+
         String sql = """
                 INSERT INTO Aluno
                     (nome, dataNascimento, email, senha, Endereco_idEndereco)
                 VALUES (?, ?, ?, ?, ?)
                 """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, body.getNome());
+            ps.setObject(2, body.getDataNascimento());
+            ps.setString(3, body.getEmail());
+            ps.setString(4, body.getSenha());
+            ps.setInt(5, body.getEnderecoIdEndereco());
+            return ps;
+        }, keyHolder);
 
-        jdbcTemplate.update(
-                sql,
-                body.getNome(),
-                body.getDataNascimento(),
-                body.getEmail(),
-                body.getSenha(),
-                body.getEnderecoIdEndereco()
-        );
-
-        return ResponseEntity.status(201).build();
+        Number key = keyHolder.getKey();
+        body.setIdAluno(key.intValue());
+        return ResponseEntity.status(201).body(body);
     }
 
     @PutMapping("/{id}")
