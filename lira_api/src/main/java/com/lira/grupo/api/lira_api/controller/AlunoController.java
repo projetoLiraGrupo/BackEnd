@@ -39,7 +39,7 @@ public class AlunoController {
         );
     }
 
-    @PostMapping
+    @PostMapping("/cadastrar")
     public ResponseEntity<AlunoResponseDto> cadastrar(@Valid @RequestBody AlunoDto alunoDto) {
         Endereco endereco = enderecoRepository
                 .findById(alunoDto.getFkEndereco())
