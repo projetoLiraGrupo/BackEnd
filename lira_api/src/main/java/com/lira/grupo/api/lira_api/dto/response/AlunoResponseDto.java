@@ -1,6 +1,6 @@
-package com.lira.grupo.api.lira_api.model.response;
+package com.lira.grupo.api.lira_api.dto.response;
 
-public class AlunoResponse {
+public class AlunoResponseDto {
     private String alunoNome;
 
     private String alunoEmail;
@@ -9,9 +9,9 @@ public class AlunoResponse {
 
     private String alunoCpf;
 
-    public AlunoResponse(){}
+    public AlunoResponseDto(){}
 
-    public AlunoResponse(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf) {
+    public AlunoResponseDto(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf) {
         this.alunoNome = alunoNome;
         this.alunoEmail = alunoEmail;
         this.alunoSenha = alunoSenha;

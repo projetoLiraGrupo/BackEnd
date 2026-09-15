@@ -24,6 +24,8 @@ public class AlunoDto {
 
     @NotBlank(message = "O CPF é obrigatório.")
 
+    // antes de gritar com a Ma_Hir
+    // Pesquise regex, é legal;
     @Pattern(regexp = "(^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$)|(^\\d{11}$)", message = "O CPF deve estar no formato válido.")
     private String alunoCpf;
 
