@@ -39,6 +39,18 @@ public class AlunoController {
         );
     }
 
+    private AlunoDto transformarParaDto(Aluno aluno) {
+        return new AlunoDto(
+                aluno.getAlunoNome(),
+                aluno.getAlunoEmail(),
+                aluno.getAlunoSenha(),
+                aluno.getAlunoCpf(),
+                aluno.getDataDeNascimento(),
+                aluno.getAlunoPossuiResponsavel(),
+                aluno.getEndereco().getIdEndereco()
+        );
+    }
+
     @PostMapping("/cadastrar")
     public ResponseEntity<AlunoResponseDto> cadastrar(@Valid @RequestBody AlunoDto alunoDto) {
         Endereco endereco = enderecoRepository

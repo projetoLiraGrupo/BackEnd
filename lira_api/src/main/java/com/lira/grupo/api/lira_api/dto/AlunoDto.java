@@ -1,12 +1,13 @@
 package com.lira.grupo.api.lira_api.dto;
 
-import java.sql.Date;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import java.util.Date;
 
 public class AlunoDto {
 
@@ -38,6 +39,16 @@ public class AlunoDto {
 
     @NotNull(message = "A chave estrangeira do endereço é obrigatória.")
     private Integer fkEndereco;
+
+    public AlunoDto(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf, Date dataDeNascimento, Boolean alunoPossuiResponsavel, Integer fkEndereco) {
+        this.alunoNome = alunoNome;
+        this.alunoEmail = alunoEmail;
+        this.alunoSenha = alunoSenha;
+        this.alunoCpf = alunoCpf;
+        this.dataDeNascimento = dataDeNascimento;
+        this.alunoPossuiResponsavel = alunoPossuiResponsavel;
+        this.fkEndereco = fkEndereco;
+    }
 
     public AlunoDto() {
     }
