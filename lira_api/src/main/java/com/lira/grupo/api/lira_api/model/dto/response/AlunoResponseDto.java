@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.dto.response;
+package com.lira.grupo.api.lira_api.model.dto.response;
 
 public class AlunoResponseDto {
     private String alunoNome;

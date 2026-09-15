@@ -1,7 +1,7 @@
 package com.lira.grupo.api.lira_api.controller;
 
-import com.lira.grupo.api.lira_api.dto.AlunoDto;
-import com.lira.grupo.api.lira_api.dto.response.AlunoResponseDto;
+import com.lira.grupo.api.lira_api.model.dto.AlunoDto;
+import com.lira.grupo.api.lira_api.model.dto.response.AlunoResponseDto;
 import com.lira.grupo.api.lira_api.model.Aluno;
 import com.lira.grupo.api.lira_api.model.Endereco;
 import com.lira.grupo.api.lira_api.repository.AlunoRepository;
