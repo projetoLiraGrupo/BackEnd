@@ -3,7 +3,7 @@ package com.lira.grupo.api.lira_api.model;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "Aluno")
