@@ -1,13 +1,17 @@
 package com.lira.grupo.api.lira_api.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Aluno")
-public class Aluno {
+public class Aluno implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +42,7 @@ public class Aluno {
     )
     private Endereco endereco;
 
+
     public Aluno(Integer idAluno, String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf, Boolean alunoPossuiResponsavel, Date dataDeNascimento, Endereco endereco) {
         this.idAluno = idAluno;
         this.alunoNome = alunoNome;
@@ -51,6 +56,50 @@ public class Aluno {
 
     public Aluno() {
     }
+
+
+
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.alunoSenha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.alunoEmail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
+
+
 
     public Integer getIdAluno() {
         return idAluno;

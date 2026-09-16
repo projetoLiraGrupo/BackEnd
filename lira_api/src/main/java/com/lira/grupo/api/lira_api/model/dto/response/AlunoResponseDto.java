@@ -1,20 +1,17 @@
 package com.lira.grupo.api.lira_api.model.dto.response;
 
 public class AlunoResponseDto {
+
     private String alunoNome;
-
     private String alunoEmail;
-
-    private String alunoSenha;
-
     private String alunoCpf;
 
-    public AlunoResponseDto(){}
+    public AlunoResponseDto() {}
 
-    public AlunoResponseDto(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf) {
+
+    public AlunoResponseDto(String alunoNome, String alunoEmail, String alunoCpf) {
         this.alunoNome = alunoNome;
         this.alunoEmail = alunoEmail;
-        this.alunoSenha = alunoSenha;
         this.alunoCpf = alunoCpf;
     }
 
@@ -32,14 +29,6 @@ public class AlunoResponseDto {
 
     public void setAlunoEmail(String alunoEmail) {
         this.alunoEmail = alunoEmail;
-    }
-
-    public String getAlunoSenha() {
-        return alunoSenha;
-    }
-
-    public void setAlunoSenha(String alunoSenha) {
-        this.alunoSenha = alunoSenha;
     }
 
     public String getAlunoCpf() {

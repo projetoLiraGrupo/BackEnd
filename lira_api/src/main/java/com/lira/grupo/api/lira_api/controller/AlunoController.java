@@ -34,7 +34,6 @@ public class AlunoController {
         return new AlunoResponseDto(
                 aluno.getAlunoNome(),
                 aluno.getAlunoEmail(),
-                aluno.getAlunoSenha(),
                 aluno.getAlunoCpf()
         );
     }
