@@ -8,6 +8,7 @@ import com.lira.grupo.api.lira_api.repository.AlunoRepository;
 import com.lira.grupo.api.lira_api.repository.EnderecoRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +25,12 @@ public class AlunoController {
 
     private final AlunoRepository alunoRepository;
     private final EnderecoRepository enderecoRepository;
+    private final PasswordEncoder passwordEncoder; 
 
-    public AlunoController(AlunoRepository alunoRepository,EnderecoRepository enderecoRepository) {
+    public AlunoController(AlunoRepository alunoRepository, EnderecoRepository enderecoRepository, PasswordEncoder passwordEncoder) {
         this.alunoRepository = alunoRepository;
         this.enderecoRepository = enderecoRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private AlunoResponseDto transformarParaResponseDto(Aluno aluno) {
@@ -63,7 +66,10 @@ public class AlunoController {
         Aluno aluno = new Aluno();
         aluno.setAlunoNome(alunoDto.getAlunoNome());
         aluno.setAlunoEmail(alunoDto.getAlunoEmail());
-        aluno.setAlunoSenha(alunoDto.getAlunoSenha());
+
+        
+        aluno.setAlunoSenha(passwordEncoder.encode(alunoDto.getAlunoSenha()));
+
         aluno.setAlunoCpf(alunoDto.getAlunoCpf());
         aluno.setDataDeNascimento(alunoDto.getDataDeNascimento());
         aluno.setAlunoPossuiResponsavel(alunoDto.getAlunoPossuiResponsavel());
@@ -71,14 +77,12 @@ public class AlunoController {
 
         Aluno alunoSalvo = alunoRepository.save(aluno);
 
-
         return ResponseEntity.status(201).body(transformarParaResponseDto(alunoSalvo));
     }
 
     @GetMapping
     public ResponseEntity<List<AlunoResponseDto>> listarTodos() {
         List<Aluno> alunos = alunoRepository.findAll();
-
 
         List<AlunoResponseDto> responseDtos = alunos.stream()
                 .map(this::transformarParaResponseDto)
@@ -117,7 +121,10 @@ public class AlunoController {
         Aluno aluno = alunoEncontrado.get();
         aluno.setAlunoNome(alunoDto.getAlunoNome());
         aluno.setAlunoEmail(alunoDto.getAlunoEmail());
-        aluno.setAlunoSenha(alunoDto.getAlunoSenha());
+
+        
+        aluno.setAlunoSenha(passwordEncoder.encode(alunoDto.getAlunoSenha()));
+
         aluno.setAlunoCpf(alunoDto.getAlunoCpf());
         aluno.setDataDeNascimento(alunoDto.getDataDeNascimento());
         aluno.setAlunoPossuiResponsavel(alunoDto.getAlunoPossuiResponsavel());
@@ -148,7 +155,8 @@ public class AlunoController {
             aluno.setAlunoEmail(alunoDto.getAlunoEmail());
         }
         if (alunoDto.getAlunoSenha() != null) {
-            aluno.setAlunoSenha(alunoDto.getAlunoSenha());
+            
+            aluno.setAlunoSenha(passwordEncoder.encode(alunoDto.getAlunoSenha()));
         }
         if (alunoDto.getAlunoCpf() != null) {
             aluno.setAlunoCpf(alunoDto.getAlunoCpf());
