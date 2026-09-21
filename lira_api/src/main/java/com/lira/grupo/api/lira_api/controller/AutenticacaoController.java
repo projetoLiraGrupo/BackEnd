@@ -32,10 +32,9 @@ public class AutenticacaoController {
             
             return ResponseEntity.status(401).body(Map.of("erro", "E-mail ou senha inválidos."));
         } catch (Exception e) {
-            
+
             e.printStackTrace();
 
-            
             return ResponseEntity.status(500).body(Map.of("erro", "Erro interno: " + e.getMessage()));
         }
     }
