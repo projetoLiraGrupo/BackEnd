@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.secret:minha-chave-secreta-super-segura}")
+    @Value("${api.security.token.secret:JIRA-CHAVE-TEMPORARIA}")
     private String secret;
 
     public String gerarToken(String email) {

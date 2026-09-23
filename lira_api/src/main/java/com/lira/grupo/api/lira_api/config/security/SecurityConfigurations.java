@@ -35,11 +35,24 @@ public class SecurityConfigurations {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
+
                         ).permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/alunos/cadastrar").permitAll()
+//                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/alunos/cadastrar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
+
+
+                        //  DEPOIS DAQUI REMOVA POR SER TIPO, SÓ BASICO DE TESTE
+                        .requestMatchers(HttpMethod.GET, "/alunos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/alunos/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/alunos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/alunos/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/alunos/**").permitAll()
+
 
                         .anyRequest().authenticated()
                 )
