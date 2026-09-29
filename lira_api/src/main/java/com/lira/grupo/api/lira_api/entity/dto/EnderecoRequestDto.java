@@ -1,11 +1,10 @@
-package com.lira.grupo.api.lira_api.model.dto;
+package com.lira.grupo.api.lira_api.entity.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class EnderecoDto {
+public class EnderecoRequestDto {
 
     @NotBlank(message = "O logradouro/rua é obrigatório.")
     @Size(max = 150, message = "O logradouro deve ter no máximo 150 caracteres.")
@@ -35,7 +34,7 @@ public class EnderecoDto {
     @Pattern(regexp = "^\\d{5}-\\d{3}$|^\\d{8}$", message = "O CEP informado é inválido. Use o formato 00000-000 ou apenas números.")
     private String cep;
 
-    public EnderecoDto() {
+    public EnderecoRequestDto() {
     }
 
     public String getLogradouro() {

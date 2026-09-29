@@ -1,7 +1,7 @@
 package com.lira.grupo.api.lira_api.service;
 
 import com.lira.grupo.api.lira_api.config.security.TokenService;
-import com.lira.grupo.api.lira_api.model.dto.AutenticacaoDto;
+import com.lira.grupo.api.lira_api.entity.dto.LoginRequestDto;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,7 @@ public class LoginService {
         this.tokenService = tokenService;
     }
 
-    public String autenticar(AutenticacaoDto dados) {
+    public String autenticar(LoginRequestDto dados) {
         
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.getEmail(), dados.getSenha());
 

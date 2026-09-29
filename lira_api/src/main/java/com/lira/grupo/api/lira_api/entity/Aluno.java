@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.model;
+package com.lira.grupo.api.lira_api.entity;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;

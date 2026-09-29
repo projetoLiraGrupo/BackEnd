@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.model.dto;
+package com.lira.grupo.api.lira_api.entity.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 
-public class AlunoDto {
+public class AlunoRequestDto {
 
     @NotBlank(message = "O nome do aluno é obrigatório.")
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres.")
@@ -40,7 +40,7 @@ public class AlunoDto {
     @NotNull(message = "A chave estrangeira do endereço é obrigatória.")
     private Integer fkEndereco;
 
-    public AlunoDto(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf, Date dataDeNascimento, Boolean alunoPossuiResponsavel, Integer fkEndereco) {
+    public AlunoRequestDto(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf, Date dataDeNascimento, Boolean alunoPossuiResponsavel, Integer fkEndereco) {
         this.alunoNome = alunoNome;
         this.alunoEmail = alunoEmail;
         this.alunoSenha = alunoSenha;
@@ -50,7 +50,7 @@ public class AlunoDto {
         this.fkEndereco = fkEndereco;
     }
 
-    public AlunoDto() {
+    public AlunoRequestDto() {
     }
 
     public String getAlunoNome() {

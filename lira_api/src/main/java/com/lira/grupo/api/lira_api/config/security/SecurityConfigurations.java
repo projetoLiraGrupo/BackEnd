@@ -27,36 +27,55 @@ public class SecurityConfigurations {
 
         return http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // NECESSÁRIO PARA O H2-CONSOLE
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
                 .authorizeHttpRequests(authorize -> authorize
 
-                        
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
-
                         ).permitAll()
 
-//                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        // H2
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/h2-console").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/alunos/cadastrar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/alunos/cadastrar"
+                        ).permitAll()
 
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/auth/login"
+                        ).permitAll()
 
-
-                        //  DEPOIS DAQUI REMOVA POR SER TIPO, SÓ BASICO DE TESTE
+                        // TESTE
                         .requestMatchers(HttpMethod.GET, "/alunos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/alunos/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/alunos/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/alunos/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/alunos/**").permitAll()
 
-
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .addFilterBefore(
+                        securityFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
                 .build();
     }
 

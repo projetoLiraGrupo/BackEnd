@@ -1,6 +1,6 @@
 package com.lira.grupo.api.lira_api.aws;
 
-
+import com.lira.grupo.api.lira_api.exception.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,28 +23,36 @@ public class S3Service {
         this.s3Client = s3Client;
     }
 
-
-    public String uploadFile(String key, MultipartFile file) throws IOException {
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+    public String uploadFile(String key, MultipartFile file) {
+        PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .contentType(file.getContentType())
                 .build();
 
-        s3Client.putObject(putObjectRequest,
-                RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-
-        return "File uploaded: " + key;
+        try {
+            s3Client.putObject(
+                    request,
+                    RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+            );
+            return "File uploaded: " + key;
+        } catch (IOException exception) {
+            throw new StorageException("Não foi possível ler o arquivo enviado.", exception);
+        } catch (RuntimeException exception) {
+            throw new StorageException("Não foi possível enviar o arquivo ao S3.", exception);
+        }
     }
-
 
     public byte[] downloadFile(String key) {
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build();
+        try {
+            GetObjectRequest request = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
 
-        return s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
+            return s3Client.getObjectAsBytes(request).asByteArray();
+        } catch (RuntimeException exception) {
+            throw new StorageException("Não foi possível baixar o arquivo do S3.", exception);
+        }
     }
 }
-
