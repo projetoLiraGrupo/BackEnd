@@ -35,7 +35,7 @@ public class AlunoService {
         this.alunoMapper = alunoMapper;
     }
 
-    
+    @Transactional
     public AlunoResponseDto cadastrar(AlunoRequestDto dto) {
         validarConflitosDeCadastro(dto);
         Endereco endereco = buscarEndereco(dto.getFkEndereco());
@@ -47,7 +47,7 @@ public class AlunoService {
         return alunoMapper.toResponseDto(alunoRepository.save(aluno));
     }
 
-    
+    @Transactional(readOnly = true)
     public List<AlunoResponseDto> listarTodos() {
         return alunoRepository.findAll()
                 .stream()
@@ -55,12 +55,12 @@ public class AlunoService {
                 .toList();
     }
 
-    
+    @Transactional(readOnly = true)
     public AlunoResponseDto buscarPorId(Integer id) {
         return alunoMapper.toResponseDto(buscarAluno(id));
     }
 
-    
+    @Transactional
     public AlunoResponseDto atualizar(Integer id, AlunoRequestDto dto) {
         Aluno aluno = buscarAluno(id);
         validarConflitosDeAtualizacao(id, dto);
@@ -73,7 +73,7 @@ public class AlunoService {
         return alunoMapper.toResponseDto(alunoRepository.save(aluno));
     }
 
-    
+    @Transactional
     public AlunoResponseDto atualizarParcial(Integer id, AlunoRequestDto dto) {
         Aluno aluno = buscarAluno(id);
         validarConflitosDeAtualizacao(id, dto);
@@ -91,7 +91,7 @@ public class AlunoService {
         return alunoMapper.toResponseDto(alunoRepository.save(aluno));
     }
 
-    
+    @Transactional
     public void deletar(Integer id) {
         Aluno aluno = buscarAluno(id);
         alunoRepository.delete(aluno);
