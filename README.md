@@ -29,11 +29,14 @@ BackEnd/
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/lira/grupo/api/lira_api/
+│   │   │   │   ├── aws/
 │   │   │   │   ├── config/
 │   │   │   │   │   └── security/
 │   │   │   │   ├── controller/
+│   │   │   │   |   └──aws/
 │   │   │   │   ├── entity/
 │   │   │   │   │   └── dto/
+|   |   |   |   |       └── response/
 │   │   │   │   ├── exception/
 │   │   │   │   ├── mapper/
 │   │   │   │   ├── repository/
