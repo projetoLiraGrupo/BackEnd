@@ -12,6 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.lira.grupo.api.lira_api.repository.AlunoRepository;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -84,9 +89,32 @@ public class SecurityConfigurations {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); 
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(AlunoRepository alunoRepository) {
+
+        return email -> alunoRepository
+                .findByAlunoEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "Aluno não encontrado: " + email
+                        )
+                );
+    }
+    @Bean
+    public AuthenticationProvider authenticationProvider(
+            UserDetailsService userDetailsService
+    ) {
+
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(userDetailsService);
+
+        provider.setPasswordEncoder(passwordEncoder());
+
+        return provider;
     }
 }

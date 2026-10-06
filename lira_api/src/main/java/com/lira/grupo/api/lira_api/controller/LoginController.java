@@ -27,7 +27,7 @@ public class LoginController {
     public ResponseEntity<TokenResponseDto> login(
             @RequestBody @Valid LoginRequestDto dados
     ) {
-        return ResponseEntity.ok(new com.lira.grupo.api.lira_api.entity.dto.response.TokenResponseDto(loginService.autenticar(dados)));
+        return ResponseEntity.ok(new TokenResponseDto(loginService.autenticar(dados)));
         //NONGIEM AVAI LER ISSO MAS PRECISO MUITO RECLAMAR
         //ṔASSEI UM TEMPO ENORME PARA CONSERTAR UM ERRO DE REFERENCIA OCM TOKENRESPONSE
         // NADA NA INTERNET OU NADA QUE FAZIA O MENOR SENTIDO
