@@ -2,8 +2,8 @@ package com.lira.grupo.api.lira_api.service;
 
 import com.lira.grupo.api.lira_api.config.security.TokenService;
 import com.lira.grupo.api.lira_api.entity.Aluno;
-import com.lira.grupo.api.lira_api.entity.dto.LoginRequestDto;
-import com.lira.grupo.api.lira_api.entity.dto.response.AlunoResponseDto;
+import com.lira.grupo.api.lira_api.requestDto.LoginRequestDto;
+import com.lira.grupo.api.lira_api.responseDto.AlunoResponseDto;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

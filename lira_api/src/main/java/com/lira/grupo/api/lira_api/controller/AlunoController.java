@@ -1,7 +1,7 @@
 package com.lira.grupo.api.lira_api.controller;
 
-import com.lira.grupo.api.lira_api.entity.dto.AlunoRequestDto;
-import com.lira.grupo.api.lira_api.entity.dto.response.AlunoResponseDto;
+import com.lira.grupo.api.lira_api.requestDto.AlunoRequestDto;
+import com.lira.grupo.api.lira_api.responseDto.AlunoResponseDto;
 import com.lira.grupo.api.lira_api.service.AlunoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

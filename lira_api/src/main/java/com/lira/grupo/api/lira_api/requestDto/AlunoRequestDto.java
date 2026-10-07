@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.entity.dto;
+package com.lira.grupo.api.lira_api.requestDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

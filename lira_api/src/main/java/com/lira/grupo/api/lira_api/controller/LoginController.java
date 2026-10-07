@@ -1,8 +1,8 @@
 package com.lira.grupo.api.lira_api.controller;
 
 import com.lira.grupo.api.lira_api.config.security.SecurityFilter;
-import com.lira.grupo.api.lira_api.entity.dto.LoginRequestDto;
-import com.lira.grupo.api.lira_api.entity.dto.response.AlunoResponseDto;
+import com.lira.grupo.api.lira_api.requestDto.LoginRequestDto;
+import com.lira.grupo.api.lira_api.responseDto.AlunoResponseDto;
 import com.lira.grupo.api.lira_api.service.LoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

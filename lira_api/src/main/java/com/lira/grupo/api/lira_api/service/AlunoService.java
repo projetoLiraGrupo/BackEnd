@@ -2,8 +2,8 @@ package com.lira.grupo.api.lira_api.service;
 
 import com.lira.grupo.api.lira_api.entity.Aluno;
 import com.lira.grupo.api.lira_api.entity.Endereco;
-import com.lira.grupo.api.lira_api.entity.dto.AlunoRequestDto;
-import com.lira.grupo.api.lira_api.entity.dto.response.AlunoResponseDto;
+import com.lira.grupo.api.lira_api.requestDto.AlunoRequestDto;
+import com.lira.grupo.api.lira_api.responseDto.AlunoResponseDto;
 import com.lira.grupo.api.lira_api.exception.ConflictException;
 import com.lira.grupo.api.lira_api.exception.ResourceNotFoundException;
 import com.lira.grupo.api.lira_api.repository.AlunoRepository;

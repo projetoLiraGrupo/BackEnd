@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.entity.dto;
+package com.lira.grupo.api.lira_api.requestDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

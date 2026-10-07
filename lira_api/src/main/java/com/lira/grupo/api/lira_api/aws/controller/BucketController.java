@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.controller.aws;
+package com.lira.grupo.api.lira_api.aws.controller;
 
 import com.lira.grupo.api.lira_api.aws.S3Service;
 import org.springframework.http.HttpHeaders;

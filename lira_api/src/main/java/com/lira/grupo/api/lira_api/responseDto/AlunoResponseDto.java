@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api.entity.dto.response;
+package com.lira.grupo.api.lira_api.responseDto;
 
 import com.lira.grupo.api.lira_api.entity.Aluno;
 
