@@ -1,6 +1,6 @@
 package com.lira.grupo.api.lira_api.aws;
 
-import com.lira.grupo.api.lira_api.exception.*;
+import com.lira.grupo.api.lira_api.exception.StorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,15 +15,19 @@ import java.io.IOException;
 public class S3Service {
 
     private final S3Client s3Client;
+    private final String bucketName;
 
-    @Value("${aws.s3.bucket-name}")
-    private String bucketName;
-
-    public S3Service(S3Client s3Client) {
+    public S3Service(
+            S3Client s3Client,
+            @Value("${aws.s3.bucket-name:}") String bucketName
+    ) {
         this.s3Client = s3Client;
+        this.bucketName = bucketName;
     }
 
     public String uploadFile(String key, MultipartFile file) {
+        validarBucketConfigurado();
+
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -35,7 +39,8 @@ public class S3Service {
                     request,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize())
             );
-            return "File uploaded: " + key;
+            return "Arquivo enviado: " + key;
+
         } catch (IOException exception) {
             throw new StorageException("Não foi possível ler o arquivo enviado.", exception);
         } catch (RuntimeException exception) {
@@ -44,6 +49,8 @@ public class S3Service {
     }
 
     public byte[] downloadFile(String key) {
+        validarBucketConfigurado();
+
         try {
             GetObjectRequest request = GetObjectRequest.builder()
                     .bucket(bucketName)
@@ -51,8 +58,15 @@ public class S3Service {
                     .build();
 
             return s3Client.getObjectAsBytes(request).asByteArray();
+
         } catch (RuntimeException exception) {
             throw new StorageException("Não foi possível baixar o arquivo do S3.", exception);
+        }
+    }
+
+    private void validarBucketConfigurado() {
+        if (bucketName == null || bucketName.isBlank()) {
+            throw new StorageException("AWS S3 não configurado. Defina AWS_S3_BUCKET.");
         }
     }
 }

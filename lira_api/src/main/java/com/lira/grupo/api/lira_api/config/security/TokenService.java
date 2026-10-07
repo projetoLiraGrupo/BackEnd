@@ -5,45 +5,70 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class TokenService {
 
+    private static final String ISSUER = "lira-api";
 
-    @Value("${api.security.token.secret:senha}") // honestamente se alguem notar, eu dou uma bala, mas acho que ninguem vai ler...
-    private String secret;
+    private final String secret;
+    private final long expirationSeconds;
 
-    public String gerarToken(String email) {
+    public TokenService(
+            @Value("${api.security.token.secret}") String secret,
+            @Value("${api.security.token.expiration-seconds:3600}") long expirationSeconds
+    ) {
+        this.secret = secret;
+        this.expirationSeconds = expirationSeconds;
+    }
+
+    public String gerarToken(Authentication authentication) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Instant agora = Instant.now();
+
+            List<String> authorities = authentication.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
             return JWT.create()
-                    .withIssuer("lira-api")
-                    .withSubject(email)
-                    .withExpiresAt(gerarDataExpiracao())
-                    .sign(algorithm);
+                    .withIssuer(ISSUER)
+                    .withSubject(authentication.getName())
+                    .withClaim("authorities", authorities)
+                    .withIssuedAt(agora)
+                    .withExpiresAt(agora.plus(expirationSeconds, ChronoUnit.SECONDS))
+                    .sign(algorithm());
+
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token JWT", exception);
+            throw new IllegalStateException("Não foi possível gerar o token de autenticação.", exception);
         }
     }
 
     public String validarToken(String token) {
+        if (token == null || token.isBlank()) {
+            return null;
+        }
+
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                    .withIssuer("lira-api")
+            return JWT.require(algorithm())
+                    .withIssuer(ISSUER)
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException exception) {
+
+        } catch (JWTVerificationException | IllegalArgumentException exception) {
             return null;
         }
     }
 
-    private Instant gerarDataExpiracao() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    private Algorithm algorithm() {
+        return Algorithm.HMAC256(secret);
     }
 }

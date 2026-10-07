@@ -1,9 +1,8 @@
 package com.lira.grupo.api.lira_api.aws;
 
-import com.lira.grupo.api.lira_api.exception.*;
+import com.lira.grupo.api.lira_api.exception.ExternalServiceException;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import software.amazon.awssdk.services.lambda.model.InvokeResponse;
@@ -11,11 +10,14 @@ import software.amazon.awssdk.services.lambda.model.InvokeResponse;
 @Service
 public class LambdaInvocationService {
 
-    public String callExternalLambda(String functionName, String jsonPayload) {
-        try (LambdaClient lambdaClient = LambdaClient.builder()
-                .region(Region.US_EAST_1)
-                .build()) {
+    private final LambdaClient lambdaClient;
 
+    public LambdaInvocationService(LambdaClient lambdaClient) {
+        this.lambdaClient = lambdaClient;
+    }
+
+    public String callExternalLambda(String functionName, String jsonPayload) {
+        try {
             InvokeRequest request = InvokeRequest.builder()
                     .functionName(functionName)
                     .payload(SdkBytes.fromUtf8String(jsonPayload))
@@ -23,6 +25,7 @@ public class LambdaInvocationService {
 
             InvokeResponse response = lambdaClient.invoke(request);
             return response.payload().asUtf8String();
+
         } catch (RuntimeException exception) {
             throw new ExternalServiceException("Falha ao invocar a função Lambda.", exception);
         }

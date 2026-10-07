@@ -6,7 +6,6 @@ import com.lira.grupo.api.lira_api.entity.dto.AlunoRequestDto;
 import com.lira.grupo.api.lira_api.entity.dto.response.AlunoResponseDto;
 import com.lira.grupo.api.lira_api.exception.ConflictException;
 import com.lira.grupo.api.lira_api.exception.ResourceNotFoundException;
-import com.lira.grupo.api.lira_api.mapper.AlunoMapper;
 import com.lira.grupo.api.lira_api.repository.AlunoRepository;
 import com.lira.grupo.api.lira_api.repository.EnderecoRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AlunoService {
@@ -21,56 +21,47 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final EnderecoRepository enderecoRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AlunoMapper alunoMapper;
 
     public AlunoService(
             AlunoRepository alunoRepository,
             EnderecoRepository enderecoRepository,
-            PasswordEncoder passwordEncoder,
-            AlunoMapper alunoMapper
+            PasswordEncoder passwordEncoder
     ) {
         this.alunoRepository = alunoRepository;
         this.enderecoRepository = enderecoRepository;
         this.passwordEncoder = passwordEncoder;
-        this.alunoMapper = alunoMapper;
     }
 
     @Transactional
     public AlunoResponseDto cadastrar(AlunoRequestDto dto) {
         validarConflitosDeCadastro(dto);
-        Endereco endereco = buscarEndereco(dto.getFkEndereco());
 
-        Aluno aluno = alunoMapper.toEntity(dto);
-        aluno.setAlunoSenha(passwordEncoder.encode(dto.getAlunoSenha()));
-        aluno.setEndereco(endereco);
+        Aluno aluno = new Aluno();
+        aplicarDadosCompletos(aluno, dto);
 
-        return alunoMapper.toResponseDto(alunoRepository.save(aluno));
+        return AlunoResponseDto.from(alunoRepository.save(aluno));
     }
 
     @Transactional(readOnly = true)
     public List<AlunoResponseDto> listarTodos() {
         return alunoRepository.findAll()
                 .stream()
-                .map(alunoMapper::toResponseDto)
+                .map(AlunoResponseDto::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public AlunoResponseDto buscarPorId(Integer id) {
-        return alunoMapper.toResponseDto(buscarAluno(id));
+        return AlunoResponseDto.from(buscarAluno(id));
     }
 
     @Transactional
     public AlunoResponseDto atualizar(Integer id, AlunoRequestDto dto) {
         Aluno aluno = buscarAluno(id);
         validarConflitosDeAtualizacao(id, dto);
-        Endereco endereco = buscarEndereco(dto.getFkEndereco());
+        aplicarDadosCompletos(aluno, dto);
 
-        alunoMapper.updateEntity(dto, aluno);
-        aluno.setAlunoSenha(passwordEncoder.encode(dto.getAlunoSenha()));
-        aluno.setEndereco(endereco);
-
-        return alunoMapper.toResponseDto(alunoRepository.save(aluno));
+        return AlunoResponseDto.from(alunoRepository.save(aluno));
     }
 
     @Transactional
@@ -78,45 +69,73 @@ public class AlunoService {
         Aluno aluno = buscarAluno(id);
         validarConflitosDeAtualizacao(id, dto);
 
-        alunoMapper.updatePartialEntity(dto, aluno);
-
-        if (dto.getAlunoSenha() != null) {
+        if (dto.getAlunoNome() != null) {
+            aluno.setAlunoNome(dto.getAlunoNome());
+        }
+        if (dto.getAlunoEmail() != null) {
+            aluno.setAlunoEmail(normalizarEmail(dto.getAlunoEmail()));
+        }
+        if (dto.getAlunoCpf() != null) {
+            aluno.setAlunoCpf(normalizarCpf(dto.getAlunoCpf()));
+        }
+        if (dto.getDataDeNascimento() != null) {
+            aluno.setDataDeNascimento(dto.getDataDeNascimento());
+        }
+        if (dto.getAlunoPossuiResponsavel() != null) {
+            aluno.setAlunoPossuiResponsavel(dto.getAlunoPossuiResponsavel());
+        }
+        if (dto.getAlunoSenha() != null && !dto.getAlunoSenha().isBlank()) {
             aluno.setAlunoSenha(passwordEncoder.encode(dto.getAlunoSenha()));
         }
-
         if (dto.getFkEndereco() != null) {
             aluno.setEndereco(buscarEndereco(dto.getFkEndereco()));
         }
 
-        return alunoMapper.toResponseDto(alunoRepository.save(aluno));
+        return AlunoResponseDto.from(alunoRepository.save(aluno));
     }
 
     @Transactional
     public void deletar(Integer id) {
-        Aluno aluno = buscarAluno(id);
-        alunoRepository.delete(aluno);
+        alunoRepository.delete(buscarAluno(id));
+    }
+
+    private void aplicarDadosCompletos(Aluno aluno, AlunoRequestDto dto) {
+        aluno.setAlunoNome(dto.getAlunoNome());
+        aluno.setAlunoEmail(normalizarEmail(dto.getAlunoEmail()));
+        aluno.setAlunoCpf(normalizarCpf(dto.getAlunoCpf()));
+        aluno.setDataDeNascimento(dto.getDataDeNascimento());
+        aluno.setAlunoPossuiResponsavel(dto.getAlunoPossuiResponsavel());
+        aluno.setAlunoSenha(passwordEncoder.encode(dto.getAlunoSenha()));
+        aluno.setEndereco(buscarEndereco(dto.getFkEndereco()));
     }
 
     private void validarConflitosDeCadastro(AlunoRequestDto dto) {
-        if (alunoRepository.existsByAlunoEmail(dto.getAlunoEmail())) {
+        if (alunoRepository.existsByAlunoEmail(normalizarEmail(dto.getAlunoEmail()))) {
             throw new ConflictException("Já existe um aluno cadastrado com este e-mail.");
         }
-
-        if (alunoRepository.existsByAlunoCpf(dto.getAlunoCpf())) {
+        if (alunoRepository.existsByAlunoCpf(normalizarCpf(dto.getAlunoCpf()))) {
             throw new ConflictException("Já existe um aluno cadastrado com este CPF.");
         }
     }
 
     private void validarConflitosDeAtualizacao(Integer id, AlunoRequestDto dto) {
         if (dto.getAlunoEmail() != null
-                && alunoRepository.existsByAlunoEmailAndIdAlunoNot(dto.getAlunoEmail(), id)) {
+                && alunoRepository.existsByAlunoEmailAndIdAlunoNot(normalizarEmail(dto.getAlunoEmail()), id)) {
             throw new ConflictException("Já existe outro aluno cadastrado com este e-mail.");
         }
 
         if (dto.getAlunoCpf() != null
-                && alunoRepository.existsByAlunoCpfAndIdAlunoNot(dto.getAlunoCpf(), id)) {
+                && alunoRepository.existsByAlunoCpfAndIdAlunoNot(normalizarCpf(dto.getAlunoCpf()), id)) {
             throw new ConflictException("Já existe outro aluno cadastrado com este CPF.");
         }
+    }
+
+    private String normalizarEmail(String email) {
+        return email.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String normalizarCpf(String cpf) {
+        return cpf.replaceAll("\\D", "");
     }
 
     private Aluno buscarAluno(Integer id) {

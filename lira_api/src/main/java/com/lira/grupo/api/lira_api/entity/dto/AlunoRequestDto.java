@@ -1,5 +1,6 @@
 package com.lira.grupo.api.lira_api.entity.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,40 +8,58 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AlunoRequestDto {
 
     @NotBlank(message = "O nome do aluno é obrigatório.")
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres.")
+    @Schema(description = "Nome do usuário", example = "Clark Kent")
     private String alunoNome;
 
     @NotBlank(message = "O e-mail é obrigatório.")
     @Email(message = "O e-mail informado é inválido.")
+    @Schema(description = "E-mail do usuário", example = "superKentClark@Lira.com")
     private String alunoEmail;
 
     @NotBlank(message = "A senha é obrigatória.")
-    @Size(min = 6, max = 30, message = "A senha deve ter entre 6 e 30 caracteres.")
+    @Size(min = 6, max = 72, message = "A senha deve ter entre 6 e 72 caracteres.")
+    @Schema(description = "Senha do usuário", example = "0culos&Capa")
     private String alunoSenha;
 
     @NotBlank(message = "O CPF é obrigatório.")
-
-    // antes de gritar com a Ma_Hir
-    // Pesquise regex, é legal;
-    @Pattern(regexp = "(^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$)|(^\\d{11}$)", message = "O CPF deve estar no formato válido.")
+    @Pattern(
+            regexp = "(^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$)|(^\\d{11}$)",
+            message = "O CPF deve conter 11 números ou estar no formato 000.000.000-00."
+    )
+    @Schema(description = "CPF do usuário", example = "33333333333")
     private String alunoCpf;
 
     @NotNull(message = "A data de nascimento é obrigatória.")
-    @Past(message = "A data de nascimento deve ser uma data no passado.")
-    private java.util.Date dataDeNascimento;
+    @Past(message = "A data de nascimento deve estar no passado.")
+    @Schema(description = "Data de nascimento", example = "1999-12-02")
+    private LocalDate dataDeNascimento;
 
     @NotNull(message = "Informe se o aluno possui responsável.")
+    @Schema(description = "Indica se o aluno possui responsável", example = "false")
     private Boolean alunoPossuiResponsavel;
 
-    @NotNull(message = "A chave estrangeira do endereço é obrigatória.")
+    @NotNull(message = "O endereço é obrigatório.")
+    @Schema(description = "ID do endereço associado ao aluno", example = "1")
     private Integer fkEndereco;
 
-    public AlunoRequestDto(String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf, Date dataDeNascimento, Boolean alunoPossuiResponsavel, Integer fkEndereco) {
+    public AlunoRequestDto() {
+    }
+
+    public AlunoRequestDto(
+            String alunoNome,
+            String alunoEmail,
+            String alunoSenha,
+            String alunoCpf,
+            LocalDate dataDeNascimento,
+            Boolean alunoPossuiResponsavel,
+            Integer fkEndereco
+    ) {
         this.alunoNome = alunoNome;
         this.alunoEmail = alunoEmail;
         this.alunoSenha = alunoSenha;
@@ -48,9 +67,6 @@ public class AlunoRequestDto {
         this.dataDeNascimento = dataDeNascimento;
         this.alunoPossuiResponsavel = alunoPossuiResponsavel;
         this.fkEndereco = fkEndereco;
-    }
-
-    public AlunoRequestDto() {
     }
 
     public String getAlunoNome() {
@@ -85,11 +101,11 @@ public class AlunoRequestDto {
         this.alunoCpf = alunoCpf;
     }
 
-    public java.util.Date getDataDeNascimento() {
+    public LocalDate getDataDeNascimento() {
         return dataDeNascimento;
     }
 
-    public void setDataDeNascimento(java.util.Date dataDeNascimento) {
+    public void setDataDeNascimento(LocalDate dataDeNascimento) {
         this.dataDeNascimento = dataDeNascimento;
     }
 

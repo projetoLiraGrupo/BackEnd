@@ -1,80 +1,69 @@
 package com.lira.grupo.api.lira_api.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "Aluno")
+@Table(name = "aluno")
 public class Aluno implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_aluno")
     private Integer idAluno;
 
-    @Column(nullable = false)
+    @Column(name = "aluno_nome", nullable = false, length = 100)
     private String alunoNome;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "aluno_email", nullable = false, unique = true, length = 100)
     private String alunoEmail;
 
-    @Column(nullable = false)
+    @Column(name = "aluno_senha", nullable = false)
     private String alunoSenha;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "aluno_cpf", nullable = false, unique = true, length = 14)
     private String alunoCpf;
 
-    @Column(nullable = false)
+    @Column(name = "aluno_possui_responsavel", nullable = false)
     private Boolean alunoPossuiResponsavel = false;
 
-    @Column(nullable = false)
-    private Date dataDeNascimento;
+    @Column(name = "data_de_nascimento", nullable = false)
+    private LocalDate dataDeNascimento;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "fkEndereco",
-            referencedColumnName = "idEndereco"
-    )
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "fk_endereco", nullable = false)
     private Endereco endereco;
-
-
-    public Aluno(Integer idAluno, String alunoNome, String alunoEmail, String alunoSenha, String alunoCpf, Boolean alunoPossuiResponsavel, Date dataDeNascimento, Endereco endereco) {
-        this.idAluno = idAluno;
-        this.alunoNome = alunoNome;
-        this.alunoEmail = alunoEmail;
-        this.alunoSenha = alunoSenha;
-        this.alunoCpf = alunoCpf;
-        this.alunoPossuiResponsavel = alunoPossuiResponsavel;
-        this.dataDeNascimento = dataDeNascimento;
-        this.endereco = endereco;
-    }
 
     public Aluno() {
     }
 
-
-
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        return this.alunoSenha;
+        return alunoSenha;
     }
 
     @Override
     public String getUsername() {
-        return this.alunoEmail;
+        return alunoEmail;
     }
 
     @Override
@@ -96,10 +85,6 @@ public class Aluno implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
-
-
 
     public Integer getIdAluno() {
         return idAluno;
@@ -149,11 +134,11 @@ public class Aluno implements UserDetails {
         this.alunoPossuiResponsavel = alunoPossuiResponsavel;
     }
 
-    public Date getDataDeNascimento() {
+    public LocalDate getDataDeNascimento() {
         return dataDeNascimento;
     }
 
-    public void setDataDeNascimento(Date dataDeNascimento) {
+    public void setDataDeNascimento(LocalDate dataDeNascimento) {
         this.dataDeNascimento = dataDeNascimento;
     }
 

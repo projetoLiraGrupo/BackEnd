@@ -1,13 +1,15 @@
 package com.lira.grupo.api.lira_api.service;
 
 import com.lira.grupo.api.lira_api.config.security.TokenService;
+import com.lira.grupo.api.lira_api.entity.Aluno;
 import com.lira.grupo.api.lira_api.entity.dto.LoginRequestDto;
-import org.springframework.http.HttpStatus;
+import com.lira.grupo.api.lira_api.entity.dto.response.AlunoResponseDto;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Locale;
 
 @Service
 public class LoginService {
@@ -15,34 +17,22 @@ public class LoginService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    public LoginService(
-            AuthenticationManager authenticationManager,
-            TokenService tokenService
-    ) {
+    public LoginService(AuthenticationManager authenticationManager, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
     }
 
-    public String autenticar(LoginRequestDto request) {
+    public AlunoResponseDto autenticar(LoginRequestDto request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail().trim().toLowerCase(Locale.ROOT),
+                        request.getSenha()
+                )
+        );
 
-        try {
+        Aluno aluno = (Aluno) authentication.getPrincipal();
+        String token = tokenService.gerarToken(authentication);
 
-            var authenticationToken =
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getSenha()
-                    );
-
-            authenticationManager.authenticate(authenticationToken);
-
-            return tokenService.gerarToken(request.getEmail());
-
-        } catch (BadCredentialsException e) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "E-mail ou senha inválidos."
-            );
-        }
+        return AlunoResponseDto.from(aluno, token);
     }
 }

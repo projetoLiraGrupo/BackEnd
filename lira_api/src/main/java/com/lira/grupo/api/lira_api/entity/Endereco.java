@@ -1,45 +1,35 @@
 package com.lira.grupo.api.lira_api.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Endereco")
+@Table(name = "endereco")
 public class Endereco {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_endereco")
     private Integer idEndereco;
 
-    @Column(nullable = false)
-    private String CEP;
+    @Column(name = "cep", nullable = false, length = 8)
+    private String cep;
 
-    @Column(nullable = false)
+    @Column(name = "logradouro", nullable = false, length = 150)
     private String logradouro;
 
-    @Column(nullable = false)
+    @Column(name = "numero", nullable = false, length = 10)
     private String numero;
 
-    @Column()
+    @Column(name = "complemento", length = 100)
     private String complemento;
 
-
-    public Endereco() {}
-
-    public Endereco(Integer idEndereco, String CEP, String logradouro, String numero) {
-        this.idEndereco = idEndereco;
-        this.CEP = CEP;
-        this.logradouro = logradouro;
-        this.numero = numero;
+    public Endereco() {
     }
-
-    public Endereco(Integer idEndereco, String CEP, String logradouro, String numero, String complemento) {
-        this.idEndereco = idEndereco;
-        this.CEP = CEP;
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.complemento = complemento;
-    }
-
 
     public Integer getIdEndereco() {
         return idEndereco;
@@ -49,12 +39,12 @@ public class Endereco {
         this.idEndereco = idEndereco;
     }
 
-    public String getCEP() {
-        return CEP;
+    public String getCep() {
+        return cep;
     }
 
-    public void setCEP(String CEP) {
-        this.CEP = CEP;
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public String getLogradouro() {

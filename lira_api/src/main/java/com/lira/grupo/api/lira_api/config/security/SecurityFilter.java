@@ -3,6 +3,7 @@ package com.lira.grupo.api.lira_api.config.security;
 import com.lira.grupo.api.lira_api.repository.AlunoRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,8 @@ import java.io.IOException;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
+
+    public static final String COOKIE_NAME = "authToken";
 
     private final TokenService tokenService;
     private final AlunoRepository alunoRepository;
@@ -29,9 +32,10 @@ public class SecurityFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+
         String token = recuperarToken(request);
 
-        if (token != null) {
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             String email = tokenService.validarToken(token);
 
             if (email != null) {
@@ -41,6 +45,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                             null,
                             aluno.getAuthorities()
                     );
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 });
             }
@@ -50,12 +55,23 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private String recuperarToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7).trim();
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
             return null;
         }
 
-        return authHeader.substring(7);
+        for (Cookie cookie : cookies) {
+            if (COOKIE_NAME.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
     }
 }

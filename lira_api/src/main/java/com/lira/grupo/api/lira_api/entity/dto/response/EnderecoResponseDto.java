@@ -1,38 +1,42 @@
 package com.lira.grupo.api.lira_api.entity.dto.response;
 
+import com.lira.grupo.api.lira_api.entity.Endereco;
 
 public class EnderecoResponseDto {
 
-    private Integer id;
+    private Integer idEndereco;
+    private String cep;
     private String logradouro;
     private String numero;
     private String complemento;
-    private String bairro;
-    private String cidade;
-    private String estado;
-    private String cep;
 
     public EnderecoResponseDto() {
     }
 
-    public EnderecoResponseDto(Integer id, String logradouro, String numero, String complemento,
-                               String bairro, String city, String estado, String cep) {
-        this.id = id;
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.complemento = complemento;
-        this.bairro = bairro;
-        this.cidade = city;
-        this.estado = estado;
+    public static EnderecoResponseDto from(Endereco endereco) {
+        EnderecoResponseDto dto = new EnderecoResponseDto();
+        dto.idEndereco = endereco.getIdEndereco();
+        dto.cep = endereco.getCep();
+        dto.logradouro = endereco.getLogradouro();
+        dto.numero = endereco.getNumero();
+        dto.complemento = endereco.getComplemento();
+        return dto;
+    }
+
+    public Integer getIdEndereco() {
+        return idEndereco;
+    }
+
+    public void setIdEndereco(Integer idEndereco) {
+        this.idEndereco = idEndereco;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
         this.cep = cep;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getLogradouro() {
@@ -58,37 +62,4 @@ public class EnderecoResponseDto {
     public void setComplemento(String complemento) {
         this.complemento = complemento;
     }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
 }
-
