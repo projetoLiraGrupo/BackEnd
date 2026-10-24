@@ -1,5 +1,7 @@
 package com.lira.grupo.api.lira_api.exception;
 
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 public class ConflictException extends RuntimeException {
 
     public ConflictException(String message) {

@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 @Entity
 public class AlunoAula {
 
+    @Id
+    @GeneratedValue
+    private Integer idAlunoAula;
+
     @ManyToOne
     @JoinColumn(name = "fk_aluno")
     private Aluno fkAluno;
@@ -18,9 +22,18 @@ public class AlunoAula {
     }
 
 
-    public AlunoAula(Aluno fkAluno, Aula fkAula) {
+    public AlunoAula(Integer idAlunoAula, Aluno fkAluno, Aula fkAula) {
+        this.idAlunoAula = idAlunoAula;
         this.fkAluno = fkAluno;
         this.fkAula = fkAula;
+    }
+
+    public Integer getIdAlunoAula() {
+        return idAlunoAula;
+    }
+
+    public void setIdAlunoAula(Integer idAlunoAula) {
+        this.idAlunoAula = idAlunoAula;
     }
 
     public Aluno getFkAluno() {

@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 @Entity
 public class InstrumentoAluno {
 
+    @Id
+    @GeneratedValue
+    private Integer idInstrumentoAluno;
+
     @ManyToOne
     @JoinColumn(name = "fk_instrumento")
     private Instrumento fkInstrumento;
@@ -21,10 +25,19 @@ public class InstrumentoAluno {
     }
 
 
-    public InstrumentoAluno(Instrumento fkInstrumento, Aluno fkAluno, String nivel) {
+    public InstrumentoAluno(Integer idInstrumentoAluno, Instrumento fkInstrumento, Aluno fkAluno, String nivel) {
+        this.idInstrumentoAluno = idInstrumentoAluno;
         this.fkInstrumento = fkInstrumento;
         this.fkAluno = fkAluno;
         this.nivel = nivel;
+    }
+
+    public Integer getIdInstrumentoAluno() {
+        return idInstrumentoAluno;
+    }
+
+    public void setIdInstrumentoAluno(Integer idInstrumentoAluno) {
+        this.idInstrumentoAluno = idInstrumentoAluno;
     }
 
     public Instrumento getFkInstrumento() {
