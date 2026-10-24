@@ -1,6 +1,7 @@
 package com.lira.grupo.api.lira_api.aws.controller;
 
 import com.lira.grupo.api.lira_api.aws.S3Service;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Hidden
 @RestController
 @RequestMapping("/api/v1/files")
 public class BucketController {

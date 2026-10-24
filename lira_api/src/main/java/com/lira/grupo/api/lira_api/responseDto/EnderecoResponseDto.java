@@ -1,13 +1,38 @@
 package com.lira.grupo.api.lira_api.responseDto;
 
 import com.lira.grupo.api.lira_api.entity.Endereco;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Representa os dados retornados pela API relacionado ao endereço")
 public class EnderecoResponseDto {
-
+    @Schema(
+            description = "Identificador do Endereço",
+            examples = "1"
+    )
     private Integer idEndereco;
+
+    @Schema(
+            description = "CEP do endereço",
+            examples = "04105-061"
+    )
     private String cep;
+
+    @Schema(
+            description = "Nome da rua do logradouro",
+            examples = "Rua Topázio"
+    )
     private String logradouro;
+
+    @Schema(
+            description = "Número do logradouro",
+            examples = "258"
+    )
     private String numero;
+
+    @Schema(
+            description = "Complemento para o endereço",
+            examples = "2° andar"
+    )
     private String complemento;
 
     public EnderecoResponseDto() {

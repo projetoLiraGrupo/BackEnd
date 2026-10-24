@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
+@Schema(description = "Dados para cadastrar um aluno")
 public class AlunoRequestDto {
 
     @NotBlank(message = "O nome do aluno é obrigatório.")

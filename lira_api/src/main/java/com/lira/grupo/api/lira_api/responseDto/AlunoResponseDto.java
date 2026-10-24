@@ -1,18 +1,27 @@
 package com.lira.grupo.api.lira_api.responseDto;
 
 import com.lira.grupo.api.lira_api.entity.Aluno;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
+@Schema(description = "Representa os dados retornados pela API relacionado ao aulo")
 public class AlunoResponseDto {
-
+    @Schema(description = "Identificador do aluno", examples = "1")
     private Integer idAluno;
+    @Schema(description = "Nome do aluno", examples = "Clark Kent")
     private String alunoNome;
+    @Schema(description = "Email do aluno", examples = "superKentClark@Lira.com")
     private String alunoEmail;
+    @Schema(description = "CPF do aluno", examples = "33333333333")
     private String alunoCpf;
+    @Schema(description = "Aluno tem um responsavel", examples = "false")
     private Boolean alunoPossuiResponsavel;
+    @Schema(description = "Data de nascimento do aluno", examples = "1999-12-02")
     private LocalDate dataDeNascimento;
+    @Schema(description = "Identidicador do endereco do aluno", examples = "1")
     private Integer fkEndereco;
+    @Schema(description = "Token do aluno", examples = "7f3a9c2e8b1d4f6a0c5e9d2b8a7f1c4e6d0b3a9f5e2c8d1a")
     private String token;
 
     public AlunoResponseDto() {

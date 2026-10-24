@@ -1,17 +1,25 @@
 package com.lira.grupo.api.lira_api.responseDto;
 
 import com.lira.grupo.api.lira_api.entity.Endereco;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
+@Schema(description = "Representa os dados retornados pela API relacionado ao professor")
 public class ProfessorResponseDto {
-
+    @Schema(description = "Identificador do Professor", examples = "1")
     private Integer idProfessor;
+    @Schema(description = "Nome do Professor", examples = "David Luiz")
     private String nome;
+    @Schema(description = "Email do Professor", examples = "davi@lira.prof.com")
     private String email;
+    @Schema(description = "Token do Professor", examples = "1")
     private String token;
+    @Schema(description = "Telefone do Professor", examples = "11911111111")
     private String telefone;
+    @Schema(description = "Data da criação da conta do Professor", examples = "2026-10-24")
     private LocalDate criadoEm;
+    @Schema(description = "Identificador do endereço do Professor", examples = "2")
     private Endereco fkEndereco;
 
     public ProfessorResponseDto() {
