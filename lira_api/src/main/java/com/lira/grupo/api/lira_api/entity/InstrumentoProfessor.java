@@ -1,11 +1,13 @@
 package com.lira.grupo.api.lira_api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class InstrumentoProfessor {
+
+    @Id
+    @GeneratedValue
+    private Integer idInstrumentoProfessor;
 
     @ManyToOne
     @JoinColumn(name = "fk_professor")
@@ -20,9 +22,18 @@ public class InstrumentoProfessor {
     }
 
 
-    public InstrumentoProfessor(Professor fkProfessor, Instrumento fkInstrumento) {
+    public InstrumentoProfessor(Integer idInstrumentoProfessor, Professor fkProfessor, Instrumento fkInstrumento) {
+        this.idInstrumentoProfessor = idInstrumentoProfessor;
         this.fkProfessor = fkProfessor;
         this.fkInstrumento = fkInstrumento;
+    }
+
+    public Integer getIdInstrumentoProfessor() {
+        return idInstrumentoProfessor;
+    }
+
+    public void setIdInstrumentoProfessor(Integer idInstrumentoProfessor) {
+        this.idInstrumentoProfessor = idInstrumentoProfessor;
     }
 
     public Professor getFkProfessor() {
