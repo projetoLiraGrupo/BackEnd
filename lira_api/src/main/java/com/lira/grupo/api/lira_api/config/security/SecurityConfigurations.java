@@ -51,9 +51,11 @@ public class SecurityConfigurations {
                                 "/v3/api-docs.yaml",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/h2-console/"
                         ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/alunos/cadastrar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/enderecos/**").permitAll()
                         .anyRequest().authenticated()

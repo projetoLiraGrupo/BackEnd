@@ -8,15 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "logging.level.org.springframework.web=DEBUG",
+        "logging.level.org.springframework.security=DEBUG",
+        "logging.level.org.hibernate.SQL=DEBUG"
+})
 class LoginIntegrationTest {
 
     @Autowired
@@ -34,6 +41,7 @@ class LoginIntegrationTest {
         endereco.setLogradouro("Rua Topázio");
         endereco.setNumero("258");
         enderecoId = enderecoRepository.save(endereco).getIdEndereco();
+        System.out.println(">>> [SETUP] Endereco salvo com ID: " + enderecoId);
     }
 
     @Test
@@ -57,6 +65,7 @@ class LoginIntegrationTest {
         mockMvc.perform(post("/alunos/cadastrar")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(cadastroJson))
+                .andDo(print())
                 .andExpect(status().isCreated());
 
         String loginJson = """
@@ -69,6 +78,7 @@ class LoginIntegrationTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").isNotEmpty())
                 .andExpect(cookie().exists("authToken"));
@@ -86,6 +96,7 @@ class LoginIntegrationTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
+                .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
 }
