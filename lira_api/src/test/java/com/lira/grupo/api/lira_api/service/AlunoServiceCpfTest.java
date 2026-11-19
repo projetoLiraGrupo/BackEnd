@@ -71,10 +71,13 @@ class AlunoServiceCpfTest {
         Integer id = 1;
 
         String cpf = "52998224725";
+        String email = "Davi.Paulista@Lira.com";
 
         AlunoRequestDto dto = mock(AlunoRequestDto.class);
 
         when(dto.getAlunoCpf()).thenReturn(cpf);
+        when(dto.getAlunoEmail()).thenReturn(email);
+
         when(alunoRepository.findById(id))
                 .thenReturn(Optional.of(new Aluno()));
 
