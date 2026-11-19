@@ -31,6 +31,15 @@ public class AlunoResponseDto {
         return from(aluno, null);
     }
 
+
+    public AlunoResponseDto (String alunoNome, String alunoEmail, String alunoCpf) {
+
+        this.alunoNome = alunoNome;
+        this.alunoEmail = alunoEmail;
+        this.alunoCpf = alunoCpf;
+    }
+
+
     public static AlunoResponseDto from(Aluno aluno, String token) {
         AlunoResponseDto dto = new AlunoResponseDto();
         dto.idAluno = aluno.getIdAluno();

@@ -1,4 +1,4 @@
-package com.lira.grupo.api.lira_api;
+package com.lira.grupo.api.lira_api.service;
 
 import com.lira.grupo.api.lira_api.entity.Endereco;
 import com.lira.grupo.api.lira_api.repository.EnderecoRepository;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "logging.level.org.springframework.security=DEBUG",
         "logging.level.org.hibernate.SQL=DEBUG"
 })
-class LoginIntegrationTest {
+class LoginTest {
 
     @Autowired
     private MockMvc mockMvc;
