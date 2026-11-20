@@ -13,13 +13,13 @@ public class AulaGrupo {
     private Integer idAulaGrupo;
 
     @ManyToOne
-    @JoinColumn(name = "pk_aula")
-    private Aula pkAula;
+    @JoinColumn(name = "fk_aula")
+    private Aula fkAula;
 
     @Column(name = "inicio_em")
     private LocalDateTime inicioEm;
 
-    @Column(name = "terminoEm")
+    @Column(name = "termino_em")
     private LocalDateTime terminoEm;
 
     @Column(name = "qtd_aluno_max")
@@ -30,9 +30,9 @@ public class AulaGrupo {
     }
 
 
-    public AulaGrupo(Integer idAulaGrupo, Aula pkAula, LocalDateTime inicioEm, LocalDateTime terminoEm, Integer qtdAlunoMax) {
+    public AulaGrupo(Integer idAulaGrupo, Aula fkAula, LocalDateTime inicioEm, LocalDateTime terminoEm, Integer qtdAlunoMax) {
         this.idAulaGrupo = idAulaGrupo;
-        this.pkAula = pkAula;
+        this.fkAula = fkAula;
         this.inicioEm = inicioEm;
         this.terminoEm = terminoEm;
         this.qtdAlunoMax = qtdAlunoMax;
@@ -46,12 +46,12 @@ public class AulaGrupo {
         this.idAulaGrupo = idAulaGrupo;
     }
 
-    public Aula getPkAula() {
-        return pkAula;
+    public Aula getFkAula() {
+        return fkAula;
     }
 
-    public void setPkAula(Aula pkAula) {
-        this.pkAula = pkAula;
+    public void setFkAula(Aula fkAula) {
+        this.fkAula = fkAula;
     }
 
     public LocalDateTime getInicioEm() {
