@@ -2,12 +2,25 @@ package com.lira.grupo.api.lira_api.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
+@Table(
+        name = "aluno_aula",
+        uniqueConstraints = @UniqueConstraint(
+        name = "unique_key_student_course",
+        columnNames = {"fk_aluno", "fk_aula"}
+))
+
 public class AlunoAula {
 
     @Id
-    @GeneratedValue
+    @Column(name = "id_aluno_aula")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAlunoAula;
+
+    @Column(name = "marcado_em")
+    private LocalDateTime MarcadoEm;
 
     @ManyToOne
     @JoinColumn(name = "fk_aluno")
@@ -16,6 +29,8 @@ public class AlunoAula {
     @ManyToOne
     @JoinColumn(name = "fk_aula")
     private Aula fkAula;
+
+
 
 
     public AlunoAula() {
