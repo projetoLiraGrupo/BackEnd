@@ -29,13 +29,11 @@ public class AulaMapper {
 
     public static AulaResponseDto toResponse(Aula entity){
         AulaResponseDto dto = new AulaResponseDto();
-
-        entity.setIdAula(dto.getIdAula());
-        entity.setDiaHora(dto.getDiaHora());
-        entity.setNivel(dto.getNivel());
-        entity.setFkEndereco(dto.getEndereco());
-        entity.setFkProfessor(dto.getFkProfessor());
-
+        dto.setIdAula(entity.getIdAula());
+        dto.setDiaHora(entity.getDiaHora());
+        dto.setNivel(entity.getNivel());
+        dto.setEndereco(entity.getFkEndereco());
+        dto.setFkProfessor(entity.getFkProfessor());
         return dto;
     }
 

@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface AulaRepository extends JpaRepository<Aula, Integer> {
 
     List<Optional<Aula>> findByDiaHoraAfter(LocalDateTime diaHora);
+
+    Boolean existsByFkProfessorIdProfessorAndDiaHora(Integer fkProfessor, LocalDateTime diaHora);
 }
