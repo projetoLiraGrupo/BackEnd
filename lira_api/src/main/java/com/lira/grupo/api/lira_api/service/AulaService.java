@@ -3,6 +3,7 @@ package com.lira.grupo.api.lira_api.service;
 import com.lira.grupo.api.lira_api.entity.Aula;
 import com.lira.grupo.api.lira_api.entity.Endereco;
 import com.lira.grupo.api.lira_api.entity.Professor;
+import com.lira.grupo.api.lira_api.exception.ConflictException;
 import com.lira.grupo.api.lira_api.exception.ResourceNotFoundException;
 import com.lira.grupo.api.lira_api.mapper.AulaMapper;
 import com.lira.grupo.api.lira_api.repository.AulaRepository;
@@ -40,9 +41,14 @@ public class AulaService {
     }
 
     public AulaResponseDto criar(AulaRequestDto aulaParaCriar){
+
+        if(aulaRepository.existsByFkProfessorIdProfessorAndDiaHora(aulaParaCriar.getFkProfessor().getIdProfessor(),aulaParaCriar.getDiaHora())){
+            throw new ConflictException("O professor já tem uma aula neste horário.");
+        } else {
         Aula aula = AulaMapper.toEntity(aulaParaCriar);
         Aula aulaCriada = aulaRepository.save(aula);
         return AulaMapper.toResponse(aulaCriada);
+        }
     }
 
     public AulaResponseDto atualizar(Integer id, AulaRequestDto aulaParaAtualizar){
