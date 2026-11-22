@@ -3,6 +3,8 @@ package com.lira.grupo.api.lira_api.service;
 import com.lira.grupo.api.lira_api.entity.Aula;
 import com.lira.grupo.api.lira_api.entity.Endereco;
 import com.lira.grupo.api.lira_api.entity.Professor;
+import com.lira.grupo.api.lira_api.exception.ConflictException;
+import com.lira.grupo.api.lira_api.repository.AlunoRepository;
 import com.lira.grupo.api.lira_api.repository.AulaRepository;
 import com.lira.grupo.api.lira_api.repository.EnderecoRepository;
 import com.lira.grupo.api.lira_api.repository.ProfessorRepository;
@@ -33,6 +35,7 @@ class AulaServiceTest {
 
     @Mock
     private ProfessorRepository professorRepository;
+
 
     @InjectMocks
     private AulaService aulaService;
@@ -74,5 +77,32 @@ class AulaServiceTest {
         assertEquals(10, resposta.getIdAula());
         assertEquals(diaHora, resposta.getDiaHora());
         assertEquals("Intermediario", resposta.getNivel());
+    }
+
+    @Test
+    @DisplayName("Não deve criar aula quando o professor já tem aula no mesmo horário")
+    void naoDeveCriarAulaComProfessorOcupadoNoHorario() {
+
+        LocalDateTime diaHora = LocalDateTime.now().plusDays(1);
+
+        Professor professor = new Professor();
+        professor.setIdProfessor(1);
+
+        Endereco endereco = new Endereco();
+        endereco.setIdEndereco(2);
+
+        AulaRequestDto request = new AulaRequestDto(diaHora, "Intermediario", endereco, professor);
+
+
+        when(aulaRepository.existsByFkProfessorIdProfessorAndDiaHora(1, diaHora)).thenReturn(true);
+
+
+        ConflictException erro = assertThrows(
+                ConflictException.class,
+                () -> aulaService.criar(request)
+        );
+
+        assertEquals("O professor já tem uma aula neste horário.", erro.getMessage());
+        verify(aulaRepository, never()).save(any(Aula.class));
     }
 }
