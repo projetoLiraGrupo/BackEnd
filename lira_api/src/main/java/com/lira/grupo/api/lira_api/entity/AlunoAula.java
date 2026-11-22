@@ -1,6 +1,7 @@
 package com.lira.grupo.api.lira_api.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -8,10 +9,9 @@ import java.time.LocalDateTime;
 @Table(
         name = "aluno_aula",
         uniqueConstraints = @UniqueConstraint(
-        name = "unique_key_student_course",
-        columnNames = {"fk_aluno", "fk_aula"}
-))
-
+                name = "uk_aluno_aula",
+                columnNames = {"fk_aluno", "fk_aula"}
+        ))
 public class AlunoAula {
 
     @Id
@@ -19,26 +19,22 @@ public class AlunoAula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAlunoAula;
 
-    @Column(name = "marcado_em")
-    private LocalDateTime MarcadoEm;
+    @CreationTimestamp
+    @Column(name = "marcado_em", nullable = false, updatable = false)
+    private LocalDateTime marcadoEm;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_aluno")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_aluno", nullable = false)
     private Aluno fkAluno;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_aula")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_aula", nullable = false)
     private Aula fkAula;
-
-
-
 
     public AlunoAula() {
     }
 
-
-    public AlunoAula(Integer idAlunoAula, Aluno fkAluno, Aula fkAula) {
-        this.idAlunoAula = idAlunoAula;
+    public AlunoAula(Aluno fkAluno, Aula fkAula) {
         this.fkAluno = fkAluno;
         this.fkAula = fkAula;
     }
@@ -49,6 +45,10 @@ public class AlunoAula {
 
     public void setIdAlunoAula(Integer idAlunoAula) {
         this.idAlunoAula = idAlunoAula;
+    }
+
+    public LocalDateTime getMarcadoEm() {
+        return marcadoEm;
     }
 
     public Aluno getFkAluno() {
