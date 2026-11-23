@@ -16,17 +16,17 @@ public class Endereco {
     @Column(name = "id_endereco")
     private Integer idEndereco;
 
-    @Column(name = "cep", nullable = false, length = 8)
-    private String cep;
+    @Column(name = "endereco_cep", nullable = false, length = 8)
+    private String enderecoCep;
 
-    @Column(name = "logradouro", nullable = false, length = 150)
-    private String logradouro;
+    @Column(name = "endereco_logradouro", nullable = false, length = 150)
+    private String enderecoLogradouro;
 
-    @Column(name = "numero", nullable = false, length = 10)
-    private String numero;
+    @Column(name = "endereco_numero", nullable = false, length = 10)
+    private String enderecoNumero;
 
-    @Column(name = "complemento", length = 100)
-    private String complemento;
+    @Column(name = "endereco_complemento", length = 100)
+    private String enderecoComplemento;
 
     public Endereco() {
     }
@@ -40,34 +40,34 @@ public class Endereco {
     }
 
     public String getCep() {
-        return cep;
+        return enderecoCep;
     }
 
-    public void setCep(String cep) {
-        this.cep = cep;
+    public void setCep(String enderecoCep) {
+        this.enderecoCep = enderecoCep;
     }
 
     public String getLogradouro() {
-        return logradouro;
+        return enderecoLogradouro;
     }
 
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
+    public void setLogradouro(String enderecoLogradouro) {
+        this.enderecoLogradouro = enderecoLogradouro;
     }
 
     public String getNumero() {
-        return numero;
+        return enderecoNumero;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setNumero(String enderecoNumero) {
+        this.enderecoNumero = enderecoNumero;
     }
 
     public String getComplemento() {
-        return complemento;
+        return enderecoComplemento;
     }
 
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
+    public void setComplemento(String enderecoComplemento) {
+        this.enderecoComplemento = enderecoComplemento;
     }
 }
