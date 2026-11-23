@@ -2,6 +2,7 @@ package com.lira.grupo.api.lira_api.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -15,13 +16,17 @@ import java.time.LocalDateTime;
 public class AlunoAula {
 
     @Id
-    @Column(name = "id_aluno_aula")
+    @Column(name = "id_aluno_aula", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAlunoAula;
 
     @CreationTimestamp
-    @Column(name = "marcado_em", nullable = false, updatable = false)
-    private LocalDateTime marcadoEm;
+    @Column(name = "criado_em", nullable = false)
+    private LocalDateTime criadoEm;
+
+    @UpdateTimestamp
+    @Column(name = "atualizado_em", nullable = true)
+    private LocalDateTime atualizadoEm;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_aluno", nullable = false)
@@ -45,10 +50,6 @@ public class AlunoAula {
 
     public void setIdAlunoAula(Integer idAlunoAula) {
         this.idAlunoAula = idAlunoAula;
-    }
-
-    public LocalDateTime getMarcadoEm() {
-        return marcadoEm;
     }
 
     public Aluno getFkAluno() {

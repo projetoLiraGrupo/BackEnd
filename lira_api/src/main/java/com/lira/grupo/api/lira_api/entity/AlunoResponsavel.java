@@ -7,14 +7,15 @@ public class AlunoResponsavel {
 
     @Id
     @GeneratedValue
+    @Column(name = "id_aluno_responsavel", nullable = false)
     private Integer idAlunoResponsavel;
 
     @ManyToOne
-    @JoinColumn(name = "fk_aluno")
+    @JoinColumn(name = "fk_aluno", nullable = false)
     private Aluno fkAluno;
 
     @ManyToOne
-    @JoinColumn(name = "fk_responsavel")
+    @JoinColumn(name = "fk_responsavel", nullable = false)
     private Responsavel fkResponsavel;
 
 

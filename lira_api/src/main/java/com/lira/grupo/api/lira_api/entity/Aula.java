@@ -15,11 +15,11 @@ public class Aula {
     @Column(name = "id_aula")
     private Integer idAula;
 
-    @Column(name = "dia_hora")
-    private LocalDateTime diaHora;
+    @Column(name = "aula_dia_hora")
+    private LocalDateTime aulaDiaHora;
 
-    @Column(name = "nivel")
-    private String nivel;
+    @Column(name = "aula_nivel")
+    private String aulaNivel;
 
     @ManyToOne
     @JoinColumn(name = "fk_endereco")
@@ -36,8 +36,8 @@ public class Aula {
 
     public Aula(Integer idAula, LocalDateTime diaHora, String nivel, Endereco fkEndereco, Professor fkProfessor) {
         this.idAula = idAula;
-        this.diaHora = diaHora;
-        this.nivel = nivel;
+        this.aulaDiaHora = diaHora;
+        this.aulaNivel = nivel;
         this.fkEndereco = fkEndereco;
         this.fkProfessor = fkProfessor;
     }
@@ -51,19 +51,19 @@ public class Aula {
     }
 
     public LocalDateTime getDiaHora() {
-        return diaHora;
+        return aulaDiaHora;
     }
 
-    public void setDiaHora(LocalDateTime diaHora) {
-        this.diaHora = diaHora;
+    public void setDiaHora(LocalDateTime aulaDiaHora) {
+        this.aulaDiaHora = aulaDiaHora;
     }
 
     public String getNivel() {
-        return nivel;
+        return aulaNivel;
     }
 
     public void setNivel(String nivel) {
-        this.nivel = nivel;
+        this.aulaNivel = nivel;
     }
 
     public Endereco getFkEndereco() {

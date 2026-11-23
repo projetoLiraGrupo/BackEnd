@@ -9,11 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,6 +28,14 @@ public class Aluno implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_aluno")
     private Integer idAluno;
+
+    @CreationTimestamp
+    @Column(name = "criado_em", nullable = false)
+    private LocalDateTime criadoEm;
+
+    @UpdateTimestamp
+    @Column(name = "atualizado_em", nullable = true)
+    private LocalDateTime atualizadoEm;
 
     @Column(name = "aluno_nome", nullable = false, length = 100)
     private String alunoNome;
