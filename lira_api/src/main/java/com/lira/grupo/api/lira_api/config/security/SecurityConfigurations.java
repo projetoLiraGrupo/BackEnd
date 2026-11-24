@@ -54,11 +54,52 @@ public class SecurityConfigurations {
                                 "/h2-console/**",
                                 "/h2-console/"
                         ).permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/alunos/cadastrar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/enderecos/**").permitAll()
-                        .anyRequest().authenticated()
+                        
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/h2-console/**"
+                        ).permitAll()
+
+                        
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+
+                        
+                        .requestMatchers(HttpMethod.POST,   "/alunos/cadastrar").permitAll()
+                        .requestMatchers(HttpMethod.GET,    "/alunos/me/aulas").authenticated()
+                        .requestMatchers(HttpMethod.GET,    "/alunos").authenticated()
+                        .requestMatchers(HttpMethod.GET,    "/alunos/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT,    "/alunos/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,  "/alunos/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/alunos/{id}").authenticated()
+
+                        
+                        .requestMatchers(HttpMethod.POST,   "/enderecos").permitAll()   
+                        .requestMatchers(HttpMethod.GET,    "/enderecos").authenticated()
+                        .requestMatchers(HttpMethod.GET,    "/enderecos/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT,    "/enderecos/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/enderecos/{id}").authenticated()
+
+                        
+                        .requestMatchers(HttpMethod.GET,    "/aulas").authenticated()
+                        .requestMatchers(HttpMethod.GET,    "/aulas/{id}").authenticated()
+                        .requestMatchers(HttpMethod.POST,   "/aulas").authenticated()       
+                        .requestMatchers(HttpMethod.PUT,    "/aulas/{id}").authenticated()  
+
+                        
+                        .requestMatchers(HttpMethod.POST,   "/aulas/{idAula}/marcacoes").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/aulas/{idAula}/marcacoes").authenticated()
+                        .requestMatchers(HttpMethod.GET,    "/aulas/{idAula}/alunos").authenticated()
+
+                        
+                        .requestMatchers("/professores/**").authenticated()
+                        .requestMatchers("/instrumentos/**").authenticated()
+
+                        
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
