@@ -55,18 +55,18 @@ class AulaServiceTest {
     void setUp() {
         diaHora = LocalDateTime.now().plusDays(1);
 
-        
+
         professorDoBanco = new Professor();
         professorDoBanco.setIdProfessor(ID_PROFESSOR);
 
         enderecoDoBanco = new Endereco();
         enderecoDoBanco.setIdEndereco(ID_ENDERECO);
 
-        
-        request = new AulaRequestDto(diaHora, "Intermediario", enderecoComId(ID_ENDERECO), professorComId(ID_PROFESSOR));
+
+        request = new AulaRequestDto(diaHora, "Intermediario", ID_ENDERECO, ID_PROFESSOR);
     }
 
-    
+
 
     @Test
     @DisplayName("Deve criar aula com sucesso")
@@ -76,7 +76,7 @@ class AulaServiceTest {
         when(aulaRepository.existsByFkProfessorIdProfessorAndDiaHora(ID_PROFESSOR, diaHora)).thenReturn(false);
         when(aulaRepository.save(any(Aula.class))).thenAnswer(invocacao -> {
             Aula aula = invocacao.getArgument(0);
-            aula.setIdAula(ID_AULA); 
+            aula.setIdAula(ID_AULA);
             return aula;
         });
 
@@ -88,7 +88,7 @@ class AulaServiceTest {
         Aula salva = captor.getValue();
         assertEquals(diaHora, salva.getDiaHora());
         assertEquals("Intermediario", salva.getNivel());
-        assertSame(professorDoBanco, salva.getFkProfessor()); 
+        assertSame(professorDoBanco, salva.getFkProfessor());
         assertSame(enderecoDoBanco, salva.getFkEndereco());
 
         assertNotNull(resposta);
@@ -131,7 +131,7 @@ class AulaServiceTest {
     void naoDeveCriarAulaNoPassado() {
         AulaRequestDto requestNoPassado = new AulaRequestDto(
                 LocalDateTime.now().minusDays(1), "Intermediario",
-                enderecoComId(ID_ENDERECO), professorComId(ID_PROFESSOR));
+                ID_ENDERECO, ID_PROFESSOR);
 
         BusinessRuleException erro = assertThrows(
                 BusinessRuleException.class,
@@ -140,7 +140,7 @@ class AulaServiceTest {
 
         assertEquals("A aula precisa ser marcada para uma data futura.", erro.getMessage());
         verify(aulaRepository, never()).save(any(Aula.class));
-        verifyNoInteractions(professorRepository, enderecoRepository); 
+        verifyNoInteractions(professorRepository, enderecoRepository);
     }
 
     @Test
@@ -159,7 +159,7 @@ class AulaServiceTest {
         verify(aulaRepository, never()).save(any(Aula.class));
     }
 
-    
+
 
     @Test
     @DisplayName("Deve buscar aula por id")
@@ -185,7 +185,7 @@ class AulaServiceTest {
         assertEquals("Aula não encontrado(a): 99", erro.getMessage());
     }
 
-    
+
 
     @Test
     @DisplayName("Deve atualizar aula com sucesso")
@@ -203,7 +203,7 @@ class AulaServiceTest {
         verify(aulaRepository, times(1)).save(captor.capture());
 
         Aula salva = captor.getValue();
-        assertEquals(ID_AULA, salva.getIdAula()); 
+        assertEquals(ID_AULA, salva.getIdAula());
         assertEquals(diaHora, salva.getDiaHora());
         assertSame(professorDoBanco, salva.getFkProfessor());
         assertSame(enderecoDoBanco, salva.getFkEndereco());
@@ -224,19 +224,5 @@ class AulaServiceTest {
         assertEquals("Aula não encontrado(a): 99", erro.getMessage());
         verify(aulaRepository, never()).save(any(Aula.class));
         verifyNoInteractions(professorRepository, enderecoRepository);
-    }
-
-    
-
-    private static Professor professorComId(Integer id) {
-        Professor professor = new Professor();
-        professor.setIdProfessor(id);
-        return professor;
-    }
-
-    private static Endereco enderecoComId(Integer id) {
-        Endereco endereco = new Endereco();
-        endereco.setIdEndereco(id);
-        return endereco;
     }
 }

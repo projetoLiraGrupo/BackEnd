@@ -40,6 +40,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, message, request, List.of());
     }
 
+    @ExceptionHandler(BusinessRuleException.class)
+    public ResponseEntity<ApiError> handleBusinessRule(
+            BusinessRuleException exception,
+            HttpServletRequest request
+    ) {
+        // 422: a requisição é válida, mas viola uma regra de negócio (ex.: aula que já passou).
+        return buildResponse(HttpStatus.valueOf(422), exception.getMessage(), request, List.of());
+    }
+
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public ResponseEntity<ApiError> handleUnauthorized(
             Exception exception,

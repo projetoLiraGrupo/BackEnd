@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-
-)
+@Table(name = "aula")
 public class Aula {
 
     @Id
@@ -16,10 +14,10 @@ public class Aula {
     private Integer idAula;
 
     @Column(name = "aula_dia_hora")
-    private LocalDateTime aulaDiaHora;
+    private LocalDateTime diaHora;
 
     @Column(name = "aula_nivel")
-    private String aulaNivel;
+    private String nivel;
 
     @ManyToOne
     @JoinColumn(name = "fk_endereco")
@@ -36,8 +34,8 @@ public class Aula {
 
     public Aula(Integer idAula, LocalDateTime diaHora, String nivel, Endereco fkEndereco, Professor fkProfessor) {
         this.idAula = idAula;
-        this.aulaDiaHora = diaHora;
-        this.aulaNivel = nivel;
+        this.diaHora = diaHora;
+        this.nivel = nivel;
         this.fkEndereco = fkEndereco;
         this.fkProfessor = fkProfessor;
     }
@@ -51,19 +49,19 @@ public class Aula {
     }
 
     public LocalDateTime getDiaHora() {
-        return aulaDiaHora;
+        return diaHora;
     }
 
-    public void setDiaHora(LocalDateTime aulaDiaHora) {
-        this.aulaDiaHora = aulaDiaHora;
+    public void setDiaHora(LocalDateTime diaHora) {
+        this.diaHora = diaHora;
     }
 
     public String getNivel() {
-        return aulaNivel;
+        return nivel;
     }
 
     public void setNivel(String nivel) {
-        this.aulaNivel = nivel;
+        this.nivel = nivel;
     }
 
     public Endereco getFkEndereco() {

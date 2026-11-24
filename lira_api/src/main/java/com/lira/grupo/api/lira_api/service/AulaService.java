@@ -66,7 +66,6 @@ public class AulaService {
         Professor professor = buscarProfessor(aulaParaAtualizar);
         Endereco endereco = buscarEndereco(aulaParaAtualizar);
 
-        
         if (aulaRepository.existsByFkProfessorIdProfessorAndDiaHoraAndIdAulaNot(
                 professor.getIdProfessor(), aulaParaAtualizar.getDiaHora(), id)) {
             throw new ConflictException("O professor já tem uma aula neste horário.");
@@ -88,13 +87,13 @@ public class AulaService {
     }
 
     private Professor buscarProfessor(AulaRequestDto dto) {
-        Integer idProfessor = dto.getFkProfessor().getIdProfessor();
+        Integer idProfessor = dto.getFkProfessor();
         return professorRepository.findById(idProfessor)
                 .orElseThrow(() -> new ResourceNotFoundException("Professor", idProfessor));
     }
 
     private Endereco buscarEndereco(AulaRequestDto dto) {
-        Integer idEndereco = dto.getFkEndereco().getIdEndereco();
+        Integer idEndereco = dto.getFkEndereco();
         return enderecoRepository.findById(idEndereco)
                 .orElseThrow(() -> new ResourceNotFoundException("Endereço", idEndereco));
     }

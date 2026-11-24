@@ -1,40 +1,37 @@
 package com.lira.grupo.api.lira_api.responseDto;
 
-import com.lira.grupo.api.lira_api.entity.Aluno;
-import com.lira.grupo.api.lira_api.entity.Aula;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
+@Schema(description = "Representa a marcação de um aluno em uma aula")
 public class AlunoAulaResponseDto {
 
-
-    @Schema(description = "Identificador da Aula", examples = "1")
+    @Schema(description = "Identificador da marcação", examples = "1")
     private Integer idAlunoAula;
 
-    @Schema(description = "Data e hora em que a Aula foi Criada", examples = "2026/10/28T15:32:58.758Z")
+    @Schema(description = "Data e hora em que a marcação foi feita", examples = "2026-11-24T10:15:00")
     private LocalDateTime criadoEm;
 
-    @Schema(description = "Data e hora em que a Aula foi Atualizada", examples = "2026/10/30T15:32:58.758Z")
-    private LocalDateTime atualizadoEm;
+    @Schema(description = "Identificador do aluno", examples = "1")
+    private Integer idAluno;
 
-    @Schema(description = "Identificador do Aluno", examples = "1")
-    private Aluno fkAluno;
+    @Schema(description = "Nome do aluno", examples = "Clark Kent")
+    private String alunoNome;
 
-    @Schema(description = "Identificador da Aula", examples = "1")
-    private Aula fkAula;
+    @Schema(description = "Aula marcada", implementation = AulaResponseDto.class)
+    private AulaResponseDto aula;
 
     public AlunoAulaResponseDto() {
     }
 
-
-    public AlunoAulaResponseDto(Integer idAlunoAula, LocalDateTime criadoEm, LocalDateTime atualizadoEm, Aluno fkAluno, Aula fkAula) {
+    public AlunoAulaResponseDto(Integer idAlunoAula, LocalDateTime criadoEm, Integer idAluno,
+                                String alunoNome, AulaResponseDto aula) {
         this.idAlunoAula = idAlunoAula;
         this.criadoEm = criadoEm;
-        this.atualizadoEm = atualizadoEm;
-        this.fkAluno = fkAluno;
-        this.fkAula = fkAula;
+        this.idAluno = idAluno;
+        this.alunoNome = alunoNome;
+        this.aula = aula;
     }
 
     public Integer getIdAlunoAula() {
@@ -53,27 +50,27 @@ public class AlunoAulaResponseDto {
         this.criadoEm = criadoEm;
     }
 
-    public LocalDateTime getAtualizadoEm() {
-        return atualizadoEm;
+    public Integer getIdAluno() {
+        return idAluno;
     }
 
-    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
-        this.atualizadoEm = atualizadoEm;
+    public void setIdAluno(Integer idAluno) {
+        this.idAluno = idAluno;
     }
 
-    public Aluno getFkAluno() {
-        return fkAluno;
+    public String getAlunoNome() {
+        return alunoNome;
     }
 
-    public void setFkAluno(Aluno fkAluno) {
-        this.fkAluno = fkAluno;
+    public void setAlunoNome(String alunoNome) {
+        this.alunoNome = alunoNome;
     }
 
-    public Aula getFkAula() {
-        return fkAula;
+    public AulaResponseDto getAula() {
+        return aula;
     }
 
-    public void setFkAula(Aula fkAula) {
-        this.fkAula = fkAula;
+    public void setAula(AulaResponseDto aula) {
+        this.aula = aula;
     }
 }

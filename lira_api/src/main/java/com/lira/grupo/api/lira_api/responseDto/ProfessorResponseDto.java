@@ -1,6 +1,6 @@
 package com.lira.grupo.api.lira_api.responseDto;
 
-import com.lira.grupo.api.lira_api.entity.Endereco;
+import com.lira.grupo.api.lira_api.entity.Professor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -19,13 +19,26 @@ public class ProfessorResponseDto {
     private String telefone;
     @Schema(description = "Data da criação da conta do Professor", examples = "2026-10-24")
     private LocalDate criadoEm;
-    @Schema(description = "Identificador do endereço do Professor", examples = "2")
-    private Endereco fkEndereco;
+    @Schema(description = "Endereço do Professor", implementation = EnderecoResponseDto.class)
+    private EnderecoResponseDto fkEndereco;
 
     public ProfessorResponseDto() {
     }
 
-    public ProfessorResponseDto(Integer idProfessor, String nome, String email, String token, String telefone, LocalDate criadoEm, Endereco fkEndereco) {
+    public static ProfessorResponseDto from(Professor professor) {
+        ProfessorResponseDto dto = new ProfessorResponseDto();
+        dto.idProfessor = professor.getIdProfessor();
+        dto.nome = professor.getNome();
+        dto.email = professor.getEmail();
+        dto.telefone = professor.getTelefone();
+        dto.criadoEm = professor.getCriadoEm();
+        dto.fkEndereco = professor.getFkEndereco() == null
+                ? null
+                : EnderecoResponseDto.from(professor.getFkEndereco());
+        return dto;
+    }
+
+    public ProfessorResponseDto(Integer idProfessor, String nome, String email, String token, String telefone, LocalDate criadoEm, EnderecoResponseDto fkEndereco) {
         this.idProfessor = idProfessor;
         this.nome = nome;
         this.email = email;
@@ -83,11 +96,11 @@ public class ProfessorResponseDto {
         this.criadoEm = criadoEm;
     }
 
-    public Endereco getFkEndereco() {
+    public EnderecoResponseDto getFkEndereco() {
         return fkEndereco;
     }
 
-    public void setFkEndereco(Endereco fkEndereco) {
+    public void setFkEndereco(EnderecoResponseDto fkEndereco) {
         this.fkEndereco = fkEndereco;
     }
 }

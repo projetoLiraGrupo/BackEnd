@@ -1,7 +1,5 @@
 package com.lira.grupo.api.lira_api.responseDto;
 
-import com.lira.grupo.api.lira_api.entity.Endereco;
-import com.lira.grupo.api.lira_api.entity.Professor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -10,21 +8,20 @@ import java.time.LocalDateTime;
 public class AulaResponseDto {
     @Schema(description = "Identificador da aula", examples = "1")
     private Integer idAula;
-    @Schema(description = "Data e hora da aula", examples = "2026/10/28T15:32:58.758Z")
+    @Schema(description = "Data e hora da aula", examples = "2026-12-10T15:30:00")
     private LocalDateTime diaHora;
-    @Schema(description = "Nivel da aula", examples = "Intermediario")
+    @Schema(description = "Nível da aula", examples = "Intermediario")
     private String nivel;
-    @Schema(description = "Endereco da aula", implementation = EnderecoResponseDto.class)
-    private Endereco endereco;
+    @Schema(description = "Endereço da aula", implementation = EnderecoResponseDto.class)
+    private EnderecoResponseDto endereco;
     @Schema(description = "Professor da aula", implementation = ProfessorResponseDto.class)
-    private Professor fkProfessor;
-
+    private ProfessorResponseDto fkProfessor;
 
     public AulaResponseDto() {
     }
 
-
-    public AulaResponseDto(Integer idAula, LocalDateTime diaHora, String nivel, Endereco endereco, Professor fkProfessor) {
+    public AulaResponseDto(Integer idAula, LocalDateTime diaHora, String nivel,
+                           EnderecoResponseDto endereco, ProfessorResponseDto fkProfessor) {
         this.idAula = idAula;
         this.diaHora = diaHora;
         this.nivel = nivel;
@@ -56,19 +53,19 @@ public class AulaResponseDto {
         this.nivel = nivel;
     }
 
-    public Endereco getEndereco() {
+    public EnderecoResponseDto getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(Endereco endereco) {
+    public void setEndereco(EnderecoResponseDto endereco) {
         this.endereco = endereco;
     }
 
-    public Professor getFkProfessor() {
+    public ProfessorResponseDto getFkProfessor() {
         return fkProfessor;
     }
 
-    public void setFkProfessor(Professor fkProfessor) {
+    public void setFkProfessor(ProfessorResponseDto fkProfessor) {
         this.fkProfessor = fkProfessor;
     }
 }

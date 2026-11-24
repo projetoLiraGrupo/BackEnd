@@ -52,6 +52,14 @@ public class AlunoAula {
         this.idAlunoAula = idAlunoAula;
     }
 
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public LocalDateTime getAtualizadoEm() {
+        return atualizadoEm;
+    }
+
     public Aluno getFkAluno() {
         return fkAluno;
     }

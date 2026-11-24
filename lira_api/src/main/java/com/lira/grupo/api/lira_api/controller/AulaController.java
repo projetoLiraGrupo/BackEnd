@@ -3,9 +3,7 @@ package com.lira.grupo.api.lira_api.controller;
 import com.lira.grupo.api.lira_api.entity.Aula;
 import com.lira.grupo.api.lira_api.mapper.AulaMapper;
 import com.lira.grupo.api.lira_api.requestDto.AulaRequestDto;
-import com.lira.grupo.api.lira_api.responseDto.AlunoResponseDto;
 import com.lira.grupo.api.lira_api.responseDto.AulaResponseDto;
-import com.lira.grupo.api.lira_api.responseDto.EnderecoResponseDto;
 import com.lira.grupo.api.lira_api.service.AulaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,11 +38,11 @@ public class AulaController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Endereços encontrados",
+                    description = "Aulas encontradas",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
-                                    schema = @Schema(implementation = EnderecoResponseDto.class)
+                                    schema = @Schema(implementation = AulaResponseDto.class)
                             ),
                             examples = @ExampleObject(
                                     name = "Lista de aulas",
@@ -53,7 +51,7 @@ public class AulaController {
                                                                  [
                                                                     {
                                                                        "idAula": 1,
-                                                                       "diaHora": "2026/10/28T15:32:58.758Z",
+                                                                       "diaHora": "2026-12-10T15:30:00",
                                                                        "nivel": "Intermediario",
                                                                        "endereco": {
                                                                          "idEndereco": 1,
@@ -66,15 +64,14 @@ public class AulaController {
                                                                          "idProfessor": 1,
                                                                          "nome": "David Luiz",
                                                                          "email": "davidluiz04@lira.prof.com",
-                                                                         "token": "1",
-                                                                         "telefone": "11911111111",
+                                                                                                                                                  "telefone": "11911111111",
                                                                          "criadoEm": "2026-10-24",
-                                                                         "fkEndereco": 2
+                                                                         "fkEndereco": { "idEndereco": 2, "cep": "04105-062", "logradouro": "Rua Safira", "numero": "10", "complemento": null }
                                                                        }
                                                                      },
                                                                      {
                                                                        "idAula": 2,
-                                                                       "diaHora": "2026/10/28T18:30:00.758Z",
+                                                                       "diaHora": "2026-12-10T18:30:00",
                                                                        "nivel": "Avançado",
                                                                        "endereco": {
                                                                          "idEndereco": 1,
@@ -87,10 +84,9 @@ public class AulaController {
                                                                          "idProfessor": 2,
                                                                          "nome": "Thiago Silva",
                                                                          "email": "thiagosilva02@lira.prof.com",
-                                                                         "token": "1",
-                                                                         "telefone": "11911111111",
+                                                                                                                                                  "telefone": "11911111111",
                                                                          "criadoEm": "2026-10-24",
-                                                                         "fkEndereco": 2
+                                                                         "fkEndereco": { "idEndereco": 2, "cep": "04105-062", "logradouro": "Rua Safira", "numero": "10", "complemento": null }
                                                                        }
                                                                      }
                                                                  ]
@@ -115,12 +111,12 @@ public class AulaController {
                     description = "aula encontrada",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = EnderecoResponseDto.class)
+                            schema = @Schema(implementation = AulaResponseDto.class)
                     )
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Aula não encontrado encontrado",
+                    description = "Aula não encontrada",
                     content = @Content(
                             mediaType = "application/json",
                             examples = @ExampleObject(
@@ -157,7 +153,7 @@ public class AulaController {
                     description = "Aula cadastrada com sucesso",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = EnderecoResponseDto.class)
+                            schema = @Schema(implementation = AulaResponseDto.class)
                     )
             ),
             @ApiResponse(
@@ -190,9 +186,35 @@ public class AulaController {
         AulaResponseDto aulaResponseDto = aulaService.criar(aulaRequestDto);
         return ResponseEntity.status(201).body(aulaResponseDto);
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<AulaResponseDto> atualizar(@PathVariable Integer id, @RequestBody AulaRequestDto aulaRequestDto){
-//
-//    }
+
+    @Operation(
+            summary = "Atualiza uma aula",
+            description = "Atualiza todos os dados de uma aula existente"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Aula atualizada com sucesso",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AulaResponseDto.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Dados da requisição inválidos"),
+            @ApiResponse(responseCode = "404", description = "Aula, professor ou endereço não encontrado"),
+            @ApiResponse(responseCode = "409", description = "O professor já tem uma aula neste horário"),
+            @ApiResponse(responseCode = "422", description = "A aula precisa ser marcada para uma data futura")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<AulaResponseDto> atualizar(
+            @Parameter(description = "Identificador da aula", example = "1")
+            @PathVariable Integer id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Objeto contendo os novos dados da aula.",
+                    required = true
+            )
+            @Valid @RequestBody AulaRequestDto aulaRequestDto) {
+        AulaResponseDto aulaResponseDto = aulaService.atualizar(id, aulaRequestDto);
+        return ResponseEntity.ok(aulaResponseDto);
+    }
 }
