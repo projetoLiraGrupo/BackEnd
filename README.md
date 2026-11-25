@@ -4,22 +4,40 @@ Backend da plataforma **Lira Paulistana**, desenvolvido como uma API REST com Ja
 
 O projeto centraliza regras de negócio, persistência de dados, autenticação e integrações utilizadas pela aplicação, mantendo o frontend desacoplado do backend.
 
+## Sumário
+
+- [Tecnologias](#tecnologias)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Pré-requisitos](#pré-requisitos)
+- [Clonando o projeto](#clonando-o-projeto)
+- [Executando](#executando)
+- [Banco de dados](#banco-de-dados)
+- [Swagger / OpenAPI](#swagger--openapi)
+- [Autenticação e segurança](#autenticação-e-segurança)
+- [Endpoints de aluno](#endpoints-de-aluno)
+- [Validações](#validações)
+- [Senhas](#senhas)
+- [JWT](#jwt)
+- [AWS](#aws)
+- [Testes](#testes)
+- [Build](#build)
+
 ## Tecnologias
 
 - Java 21
-- Spring Boot 4.1.1
+- Spring Boot 4.0.8
 - Spring Web MVC
 - Spring Data JPA
 - Spring Security
-- JWT (`java-jwt`)
+- JWT (`java-jwt` 4.5.0)
 - Bean Validation
-- MapStruct
 - Maven
 - H2 Database para desenvolvimento
-- Microsoft SQL Server JDBC Driver
-- Swagger / OpenAPI
-- AWS SDK para S3
-- AWS SDK para Lambda
+- MySQL Connector/J
+- SpringDoc OpenAPI 3.0.2
+- AWS SDK para S3 e Lambda
+- JUnit 6
+- Mockito
 
 ## Estrutura do projeto
 
@@ -33,16 +51,17 @@ BackEnd/
 │   │   │   │   ├── config/
 │   │   │   │   │   └── security/
 │   │   │   │   ├── controller/
-│   │   │   │   |   └──aws/
+│   │   │   │   │   └── aws/
 │   │   │   │   ├── entity/
 │   │   │   │   │   └── dto/
-|   |   |   |   |       └── response/
+│   │   │   │   │       └── response/
 │   │   │   │   ├── exception/
 │   │   │   │   ├── mapper/
 │   │   │   │   ├── repository/
 │   │   │   │   └── service/
 │   │   │   └── resources/
-│   │   │       └── application.properties
+│   │   │       ├── application.properties
+│   │   │       └── application-mysql.properties
 │   │   └── test/
 │   ├── pom.xml
 │   ├── mvnw
@@ -64,7 +83,7 @@ Repository
 Database
 ```
 
-Os DTOs são utilizados para controlar os dados recebidos e retornados pela API, enquanto os mappers realizam a conversão entre DTOs e entidades.
+Os DTOs controlam os dados recebidos e retornados pela API, enquanto os mappers realizam a conversão entre DTOs e entidades.
 
 ## Pré-requisitos
 
@@ -115,26 +134,32 @@ Por padrão, a aplicação ficará disponível em:
 http://localhost:8080
 ```
 
+A porta pode ser alterada pela variável `SERVER_PORT`:
+
+```bash
+SERVER_PORT=8081 ./mvnw spring-boot:run
+```
+
 ## Banco de dados
 
-No ambiente atual de desenvolvimento, a aplicação utiliza um banco H2 em memória:
+Por padrão, o ambiente local utiliza um banco H2 em memória:
 
 ```properties
-spring.datasource.url=jdbc:h2:mem:teste
+spring.datasource.url=jdbc:h2:mem:lira;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
 spring.datasource.username=sa
 spring.datasource.password=
 spring.datasource.driver-class-name=org.h2.Driver
 ```
 
-O banco é recriado quando a aplicação é iniciada porque o Hibernate está configurado com:
+O comportamento de criação e atualização do esquema é configurado por:
 
 ```properties
-spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.hibernate.ddl-auto=update
 ```
 
-> O H2 é adequado para desenvolvimento e testes. Para ambientes persistentes, configure um banco externo, como SQL Server.
+> O H2 é adequado para desenvolvimento e testes. Dados em memória são perdidos ao reiniciar a aplicação.
 
-## H2 Console
+### H2 Console
 
 Com a aplicação em execução:
 
@@ -146,16 +171,46 @@ Configuração padrão:
 
 | Campo | Valor |
 |---|---|
-| JDBC URL | `jdbc:h2:mem:teste` |
+| JDBC URL | `jdbc:h2:mem:lira;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE` |
 | User Name | `sa` |
 | Password | vazio |
 
+O console pode ser desativado com:
+
+```properties
+H2_CONSOLE_ENABLED=false
+```
+
+### MySQL
+
+A aplicação possui um arquivo de configuração opcional para MySQL em `src/main/resources/application-mysql.properties`.
+
+Antes de habilitar o perfil, configure o banco e as variáveis de ambiente:
+
+```bash
+export DB_URL="jdbc:mysql://localhost:3306/lira_paulistana?useSSL=false&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true"
+export DB_USERNAME="root"
+export DB_PASSWORD="sua-senha"
+```
+
+Linux/macOS:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql
+```
+
+Windows:
+
+```powershell
+mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=mysql"
+```
+
 ## Swagger / OpenAPI
 
-A documentação interativa da API pode ser acessada em:
+A documentação interativa pode ser acessada em:
 
 ```text
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
 ```
 
 A especificação OpenAPI também pode ser consultada em:
@@ -166,7 +221,7 @@ http://localhost:8080/v3/api-docs
 
 ## Autenticação e segurança
 
-A API utiliza **Spring Security** e autenticação baseada em **JWT**.
+A API utiliza **Spring Security** e autenticação baseada em JWT.
 
 Fluxo esperado:
 
@@ -190,9 +245,15 @@ O token deve ser enviado no header:
 Authorization: Bearer SEU_TOKEN_JWT
 ```
 
-O cadastro de aluno e a rota de login são públicos.
+A política de acesso deve ser validada em `SecurityConfigurations` antes de publicar a aplicação em produção. Evite manter liberações temporárias destinadas apenas a testes.
 
-As rotas de aluno atualmente também possuem liberações temporárias para testes no `SecurityConfigurations`. Essas permissões devem ser revisadas antes de colocar a aplicação em produção.
+Origens CORS podem ser configuradas por variável de ambiente:
+
+```bash
+export CORS_ALLOWED_ORIGINS="http://localhost:3000,http://localhost:5173"
+```
+
+Em produção, substitua os valores locais pelos domínios reais das aplicações cliente.
 
 ## Endpoints de aluno
 
@@ -225,13 +286,13 @@ Base:
 }
 ```
 
-As requisições são validadas pela API antes de serem processadas.
+Datas devem ser informadas no formato ISO `AAAA-MM-DD`. Valide o formato de CPF aceito pela implementação dos DTOs antes de integrar o frontend.
 
 ## Validações
 
-Os DTOs utilizam Jakarta Bean Validation para validar informações recebidas pela API.
+Os DTOs utilizam Jakarta Bean Validation para validar as informações recebidas pela API.
 
-Entre as validações podem existir regras como:
+As regras podem incluir:
 
 - campos obrigatórios;
 - tamanho mínimo e máximo;
@@ -241,7 +302,7 @@ Entre as validações podem existir regras como:
 - relacionamentos existentes;
 - prevenção de e-mail ou CPF duplicado.
 
-Erros relacionados a recursos inexistentes ou conflitos de cadastro são tratados pela camada de aplicação.
+Erros relacionados a recursos inexistentes, validações ou conflitos de cadastro são tratados pela camada de aplicação.
 
 ## Senhas
 
@@ -263,34 +324,77 @@ banco de dados
 
 O serviço de token utiliza HMAC256.
 
-Em produção, configure uma chave própria para:
-
-```properties
-api.security.token.secret
-```
-
-Exemplo usando variável de ambiente:
+Em produção, configure uma chave própria e segura:
 
 ```bash
-export API_SECURITY_TOKEN_SECRET="uma-chave-segura-e-privada"
+export JWT_SECRET="uma-chave-longa-aleatoria-e-privada"
+export JWT_EXPIRATION_SECONDS="3600"
+export COOKIE_SECURE="true"
 ```
 
-> Não utilize chaves de desenvolvimento, senhas ou tokens reais diretamente no código-fonte ou no Git.
+Variáveis disponíveis:
+
+| Variável | Propriedade | Padrão |
+|---|---|---|
+| `JWT_SECRET` | `api.security.token.secret` | fallback exclusivo para desenvolvimento |
+| `JWT_EXPIRATION_SECONDS` | `api.security.token.expiration-seconds` | `3600` |
+| `COOKIE_SECURE` | `api.security.cookie.secure` | `false` |
+
+> Nunca utilize o segredo padrão, senhas reais ou tokens em produção ou diretamente no código-fonte e no Git.
 
 ## AWS
 
-O projeto possui dependências para integração com:
+A integração com AWS é opcional durante o desenvolvimento. Quando utilizada, o AWS SDK pode obter credenciais pela cadeia padrão:
 
-- Amazon S3
-- AWS Lambda
+- variável de ambiente;
+- perfil configurado em `~/.aws`;
+- credenciais de uma instância ou função IAM;
+- outras fontes suportadas pelo SDK.
 
-Configurações existentes:
+Exemplo opcional com variáveis de ambiente:
 
-```properties
-aws.s3.bucket-name=bucket
-aws.s3.region=us-east-1
-aws.access-key=AWS_ACCESS_KEY
-aws.secret-key=AWS_SECRET_KEY
+```bash
+export AWS_REGION="us-east-1"
+export AWS_S3_BUCKET="nome-do-bucket"
+export AWS_ACCESS_KEY_ID="sua-access-key"
+export AWS_SECRET_ACCESS_KEY="sua-secret-key"
 ```
 
-Para desenvolvimento,
+Para ambientes hospedados na AWS, prefira IAM Role, workload identity ou outra identidade gerenciada em vez de chaves estáticas.
+
+```properties
+aws.s3.region=${AWS_REGION:us-east-1}
+aws.s3.bucket-name=${AWS_S3_BUCKET:}
+```
+
+## Testes
+
+Linux/macOS:
+
+```bash
+./mvnw test
+```
+
+Windows:
+
+```powershell
+mvnw.cmd test
+```
+
+Os testes usam o Spring Boot Test, JUnit, Mockito e Spring Security Test conforme declarado no `pom.xml`.
+
+## Build
+
+Linux/macOS:
+
+```bash
+./mvnw clean package
+```
+
+Windows:
+
+```powershell
+mvnw.cmd clean package
+```
+
+O artefato gerado ficará disponível no diretório `target`.
